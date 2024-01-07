@@ -12,7 +12,7 @@
     position: absolute;
     bottom: 25%;
     height: 20px;
-    width: 200vw; /* Twice the viewport width */
+    width: 4000px; /* Specific width of the land */
     background: linear-gradient(to right, green 50%, blue 50%); /* Half green, half blue */
   }
   
