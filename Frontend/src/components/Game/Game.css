@@ -1,0 +1,26 @@
+/* src/components/Game/Game.css */
+
+.game-container {
+    position: relative;
+    height: 100vh; /* Full viewport height */
+    width: 100vw; /* Full viewport width */
+    overflow: hidden; /* This prevents internal scrolling */
+    /* ... other styles ... */
+  }
+  
+  .land {
+    position: absolute;
+    bottom: 25%;
+    height: 20px;
+    width: 200vw; /* Twice the viewport width */
+    background: linear-gradient(to right, green 50%, blue 50%); /* Half green, half blue */
+  }
+  
+  .player {
+    position: absolute;
+    bottom: calc(25% + 20px); /* Position the player on the land */
+    width: 30px; /* Adjust width and height as needed */
+    height: 30px;
+    background-color: blue;
+    /* Add any other player-specific styles here */
+  }
