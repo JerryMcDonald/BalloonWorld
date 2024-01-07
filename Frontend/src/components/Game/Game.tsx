@@ -6,7 +6,8 @@ import './Game.css';
 const Game: React.FC = () => {
   const gameContainerRef = useRef<HTMLDivElement>(null);
   const landWidth = 4000; // Specific width of the land
-  const [playerPosition, setPlayerPosition] = useState(0); // Start at the beginning of the land
+  // Set initial player position to the middle of the viewport
+  const [playerPosition, setPlayerPosition] = useState(window.innerWidth / 2); 
 
   // This useEffect is the key to the scrolling effect. It runs every time the playerPosition changes.
   useEffect(() => {
