@@ -13,7 +13,11 @@
     bottom: 25%;
     height: 20px;
     width: 4000px; /* Specific width of the land */
-    background: linear-gradient(to right, green 50%, blue 50%); /* Half green, half blue */
+    background: linear-gradient(to right, 
+      green 0%, green 25%, /* Green from 0% to 25% */
+      black 25%, black 50%, /* Red from 25% to 50% */
+      yellow 50%, yellow 75%, /* Yellow from 50% to 75% */
+      orange 75%, orange 100%); /* Orange from 75% to 100% */
   }
   
   .player {
