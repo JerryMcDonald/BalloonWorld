@@ -1,6 +1,7 @@
 // src/components/Game/Game.tsx
 
 import React, { useState, useEffect, useRef } from 'react';
+import BalloonBoxes from '../BalloonBoxes/BalloonBoxes';
 import './Game.css';
 
 const Game: React.FC = () => {
@@ -10,8 +11,6 @@ const Game: React.FC = () => {
   // Set initial player position to the middle of the viewport
   const [playerPosition, setPlayerPosition] = useState(window.innerWidth / 2);
   const [jumpStage, setJumpStage] = useState(0); // 0: on ground, 1: mid-jump, 2: top of jump
-
-
 
   // This useEffect is the key to the scrolling and jumping effect
   useEffect(() => {
@@ -50,6 +49,14 @@ const Game: React.FC = () => {
     };
   }, [jumpStage]);
 
+  // useEffect(() => {
+  //   // Check for collision at the top of the jump
+  //   if (jumpStage === 2 && playerPosition >= boxPosition - 30 && playerPosition <= boxPosition + 30) {
+  //     console.log('box touched');
+  //   }
+  // }, [jumpStage, playerPosition]); // Run this effect when jumpStage or playerPosition changes
+
+
   useEffect(() => {
     // This checks if the game container (div with ref={gameContainerRef}) is currently available in the DOM. It's a safety check to ensure the container exists before trying to modify it.
     if (gameContainerRef.current) {
@@ -77,6 +84,10 @@ const Game: React.FC = () => {
     <div ref={gameContainerRef} className="game-container">
       <div className="land"></div>
       <div className="player" style={{ left: `${playerPosition}px`, bottom: getJumpPosition() }}></div>
+      <BalloonBoxes left="2500px" />
+      <BalloonBoxes left="3000px" />
+      <BalloonBoxes left="3500px" />
+
     </div>
   );
 };
