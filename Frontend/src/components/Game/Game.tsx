@@ -49,14 +49,9 @@ const Game: React.FC = () => {
     };
   }, [jumpStage]);
 
-  // useEffect(() => {
-  //   // Check for collision at the top of the jump
-  //   if (jumpStage === 2 && playerPosition >= boxPosition - 30 && playerPosition <= boxPosition + 30) {
-  //     console.log('box touched');
-  //   }
-  // }, [jumpStage, playerPosition]); // Run this effect when jumpStage or playerPosition changes
+  
 
-
+  // UseEffect and UseRef to pan the viewport
   useEffect(() => {
     // This checks if the game container (div with ref={gameContainerRef}) is currently available in the DOM. It's a safety check to ensure the container exists before trying to modify it.
     if (gameContainerRef.current) {
@@ -67,16 +62,15 @@ const Game: React.FC = () => {
       // Scroll the container to keep the player centered, but don't exceed the land bounds
       container.scrollLeft = Math.min(Math.max(0, playerPosition - halfWindow), landWidth - window.innerWidth);
       // As the player moves right, scrollLeft increases because the viewport is moving to the right to follow the player, revealing more of the land on the left side.
-      console.log(container.scrollLeft);
     }
   }, [playerPosition]);
 
   // Function to determine player's bottom position based on jump stage
   const getJumpPosition = () => {
     switch (jumpStage) {
-      case 1: return 'calc(25% + 70px)'; // Mid-jump
-      case 2: return 'calc(25% + 120px)'; // Top of jump
-      default: return 'calc(25% + 20px)'; // On ground
+      case 1: return 'calc(15% + 80px)'; // Mid-jump
+      case 2: return 'calc(15% + 140px)'; // Top of jump
+      default: return 'calc(15% + 20px)'; // On ground
     }
   };
 
@@ -84,9 +78,9 @@ const Game: React.FC = () => {
     <div ref={gameContainerRef} className="game-container">
       <div className="land"></div>
       <div className="player" style={{ left: `${playerPosition}px`, bottom: getJumpPosition() }}></div>
-      <BalloonBoxes left="2500px" />
-      <BalloonBoxes left="3000px" />
-      <BalloonBoxes left="3500px" />
+      <BalloonBoxes left={2500} playerPosition={playerPosition} jumpStage={jumpStage} />
+      <BalloonBoxes left={3000} playerPosition={playerPosition} jumpStage={jumpStage} />
+      <BalloonBoxes left={3500} playerPosition={playerPosition} jumpStage={jumpStage} />
 
     </div>
   );
