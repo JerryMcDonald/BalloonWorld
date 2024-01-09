@@ -5,8 +5,8 @@
     align-items: center;
     justify-content: center;
     position: absolute;
-    height: 200px; /* Adjust as needed */
-    bottom: calc(25% + 150px); /* Adjust as needed, assuming it's above the land */
+    height: 200px;
+    bottom: calc(15% + 80px); 
 
   }
   

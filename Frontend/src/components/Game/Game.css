@@ -5,12 +5,11 @@
     height: 100vh; /* Full viewport height */
     width: 100vw; /* Full viewport width */
     overflow: hidden; /* This prevents internal scrolling */
-    /* ... other styles ... */
   }
   
   .land {
     position: absolute;
-    bottom: 25%;
+    bottom: 15%;
     height: 20px;
     width: 4000px; /* Specific width of the land */
     background: linear-gradient(to right, 
@@ -22,9 +21,8 @@
   
   .player {
     position: absolute;
-    bottom: calc(25% + 20px); /* Position the player on the land */
-    width: 30px; /* Adjust width and height as needed */
+    bottom: calc(15% + 20px); /* Actually not necessary because ground position is being returned by getJumpPosition */
+    width: 30px; 
     height: 30px;
     background-color: blue;
-    /* Add any other player-specific styles here */
   }
