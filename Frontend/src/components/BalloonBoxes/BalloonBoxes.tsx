@@ -47,13 +47,25 @@ const BalloonBoxes: React.FC<BalloonBoxesProps> = ({ left, playerPosition, jumpS
         }
       }
 
-      // Box Two Collision
+      // Box Two Collision - change the color of the block
       else if (playerRight >= boxBounds.boxTwo.start && playerLeft <= boxBounds.boxTwo.end) {
         if (isUnlocked) {
-          // change the color of block two
           const colors = ['red', 'green', 'orange', 'blue'];
-          blockTwoColorRef.current = colors[(colors.indexOf(blockTwoColorRef.current) + 1) % colors.length];
-          console.log('set block color two');
+          if (blockTwoColorRef.current === balloonColorRef.current) {
+            blockTwoColorRef.current = colors[(colors.indexOf(blockTwoColorRef.current) + 1) % colors.length];
+            // console.log(blockTwoColorRef.current, 'top');
+            // console.log(playerRight, 'right', boxBounds.boxTwo.start, 'start');
+            // console.log(playerLeft, 'left', boxBounds.boxTwo.end, 'end');
+
+          } else {
+            // remove the current balloon color from the choices
+            const newColors = colors.filter(color => color !== balloonColorRef.current)
+            blockTwoColorRef.current = newColors[(newColors.indexOf(blockTwoColorRef.current) + 1) % newColors.length];
+            // console.log(blockTwoColorRef.current, 'bottom');
+            // console.log(playerRight, 'right', boxBounds.boxTwo.start, 'start');
+            // console.log(playerLeft, 'left', boxBounds.boxTwo.end, 'end');
+          }
+
         }
       }
 
@@ -61,6 +73,8 @@ const BalloonBoxes: React.FC<BalloonBoxesProps> = ({ left, playerPosition, jumpS
       else if (playerRight >= boxBounds.boxThree.start && playerLeft <= boxBounds.boxThree.end) {
         if (isUnlocked) {
           balloonColorRef.current = blockTwoColorRef.current;
+          console.log(playerRight, 'right', boxBounds.boxThree.start, 'start', '3');
+            console.log(playerLeft, 'left', boxBounds.boxThree.end, 'end', '3');
         }
       }
 
