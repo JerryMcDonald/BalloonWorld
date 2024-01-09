@@ -1,6 +1,6 @@
 // src/components/BalloonBoxes/BalloonBoxes.tsx
 
-import React, { useState, useEffect, useCallback, useMemo } from 'react';
+import React, { useState, useEffect, useCallback, useMemo, useRef } from 'react';
 import './BalloonBoxes.css';
 
 // Define a type for the component props
@@ -13,12 +13,17 @@ interface BalloonBoxesProps {
 const BalloonBoxes: React.FC<BalloonBoxesProps> = ({ left, playerPosition, jumpStage }) => {
   const [isUnlocked, setIsUnlocked] = useState(false);
   const [balloonColor, setBalloonColor] = useState('red');
-  const [currentColor, setCurrentColor] = useState('red');
+  const [blockTwoColor, setBlockTwoColor] = useState('red');
   const [showBalloon, setShowBalloon] = useState(false);
 
   const playerLeft = playerPosition; // this is unnecessary but improves readability
   const playerRight = playerPosition + 30; // the player is 30px wide
   const jumpPeakStage = 2; // 2 is the peak of the jump
+
+  const isUnlockedRef = useRef(isUnlocked);
+  const balloonColorRef = useRef(balloonColor);
+  const blockTwoColorRef = useRef(blockTwoColor);
+  const showBalloonRef = useRef(showBalloon);
 
   // Calculate the left and right bounds of this component's boxes
   // Although not a heavy computation, useMemo is good practice here because it will prevent unnecessary re-renders, also useMemo will clearly indicate that boxBounds should only update if left is changed. 
@@ -29,57 +34,62 @@ const BalloonBoxes: React.FC<BalloonBoxesProps> = ({ left, playerPosition, jumpS
     boxFour: { start: left + 270, end: left + 300 }
   }), [left]);
 
-  const nextColor = useCallback(() => {
-    const colors = ['red', 'green', 'orange', 'blue'];
-    return colors[(colors.indexOf(currentColor) + 1) % colors.length];
-  }, [currentColor]);
 
-  const checkCollision = useCallback(() => {
-    if (jumpStage === jumpPeakStage && playerRight >= boxBounds.boxOne.start && playerLeft <= boxBounds.boxFour.end) {
-      console.log('Player is within a BallonBoxes Component', left);
+
+  const checkCollision = useCallback((playerLeft: number, playerRight: number) => {
+    if (playerRight >= boxBounds.boxOne.start && playerLeft <= boxBounds.boxFour.end) {
 
       // Box One Collision
       if (playerRight >= boxBounds.boxOne.start && playerLeft <= boxBounds.boxOne.end) {
         if (!isUnlocked) {
-          setIsUnlocked(true);
-          setShowBalloon(true);
-          console.log('touching box one');
+          isUnlockedRef.current = true;
+          showBalloonRef.current = true;
         }
       }
 
       // Box Two Collision
       else if (playerRight >= boxBounds.boxTwo.start && playerLeft <= boxBounds.boxTwo.end) {
         if (isUnlocked) {
-          setCurrentColor(nextColor());
-          console.log('touching box two');
+          // change the color of block two
+          const colors = ['red', 'green', 'orange', 'blue'];
+          blockTwoColorRef.current = colors[(colors.indexOf(blockTwoColorRef.current) + 1) % colors.length];
+          console.log('set block color two');
         }
       }
 
       // Box Three Collision
       else if (playerRight >= boxBounds.boxThree.start && playerLeft <= boxBounds.boxThree.end) {
         if (isUnlocked) {
-          setBalloonColor(currentColor);
-          console.log('touching box three');
+          balloonColorRef.current = blockTwoColorRef.current;
         }
       }
 
       // Box Four Collision
       else if (playerRight >= boxBounds.boxFour.start && playerLeft <= boxBounds.boxFour.end) {
         if (isUnlocked) {
-          setIsUnlocked(false);
-          setShowBalloon(false);
-          setCurrentColor('red');
-          console.log('touching box four');
+          isUnlockedRef.current = false;
+          showBalloonRef.current = false;
         }
       }
     }
-  }, [jumpStage, playerLeft, playerRight, boxBounds, isUnlocked, currentColor, nextColor, left]);
-
+  }, [boxBounds, isUnlocked]);
 
   useEffect(() => {
-    checkCollision();
-  }, [checkCollision]);
+    if (jumpStage === jumpPeakStage) {
+      checkCollision(playerLeft, playerRight);
+      // No need to directly set states here, as refs are updated in checkCollision
+    }
+  }, [jumpStage, playerLeft, playerRight, checkCollision]);
 
+  useEffect(() => {
+    if (jumpStage === jumpPeakStage) {
+      // Update actual states with values from refs
+      setIsUnlocked(isUnlockedRef.current);
+      setShowBalloon(showBalloonRef.current);
+      setBlockTwoColor(blockTwoColorRef.current);
+      setBalloonColor(balloonColorRef.current);
+    }
+  }, [jumpStage]);
 
   return (
     <div className="balloon-box-container" style={{ left: `${left}px` }}>
@@ -91,7 +101,7 @@ const BalloonBoxes: React.FC<BalloonBoxesProps> = ({ left, playerPosition, jumpS
       {/* Second Box */}
       <div
         className="box"
-        style={{ backgroundColor: isUnlocked ? currentColor : 'grey', marginLeft: '60px' }}
+        style={{ backgroundColor: isUnlocked ? blockTwoColor : 'grey', marginLeft: '60px' }}
       ></div>
       {/* Third Box */}
       <div
