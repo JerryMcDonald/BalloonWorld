@@ -37,20 +37,18 @@ const BalloonBoxes: React.FC<BalloonBoxesProps> = ({ left, playerPosition, jumpS
     // Check if the player is within this component before performing additional logic
     if (jumpStage === jumpPeakStage && playerRight >= boxBounds.boxOne.start && playerLeft <= boxBounds.boxFour.end) {
       console.log('Player is within a BallonBoxes Component', left);
-
-      // Implement the action based on which box was hit
-      // You can add additional logic to distinguish between different boxes
-      // For example, using the 'left' prop to determine which box it is
+      // next determine which box was hit
+      if (playerLeft <= boxBounds.boxOne.end) {
+        console.log('touching box one')
+      } else if (playerRight >= boxBounds.boxTwo.start && playerLeft <= boxBounds.boxTwo.end) {
+        console.log('touching box two')
+      } else if (playerRight >= boxBounds.boxThree.start && playerLeft <= boxBounds.boxThree.end) {
+        console.log('touching box three')
+      } else if (playerRight >= boxBounds.boxFour.start) { // no need to check playerLeft due to parent if statement
+        console.log('touching box four')
+      }
     }
   }, [jumpStage, left, boxBounds, playerLeft, playerRight]);
-
-  // useEffect(() => {
-  //   // Check for collision at the top of the jump
-  //   if (jumpStage === 2 && playerPosition >= boxPosition - 30 && playerPosition <= boxPosition + 30) {
-  //     console.log('box touched');
-  //   }
-  // }, [jumpStage, playerPosition]); // Run this effect when jumpStage or playerPosition changes
-
   useEffect(() => {
     checkCollision();
   }, [checkCollision]);
@@ -64,28 +62,24 @@ const BalloonBoxes: React.FC<BalloonBoxesProps> = ({ left, playerPosition, jumpS
         style={{ backgroundColor: isUnlocked ? 'successGreen' : 'black' }} 
         onClick={() => { setIsUnlocked(true); setShowBalloon(true); }}
       ></div>
-
       {/* Second Box */}
       <div 
         className="box" 
         style={{ backgroundColor: isUnlocked ? currentColor : 'grey', marginLeft: '60px' }} 
         onClick={() => { if (isUnlocked) setCurrentColor(nextColor()); }}
       ></div>
-
       {/* Third Box */}
       <div 
         className="box" 
         style={{ backgroundColor: isUnlocked ? 'blue' : 'grey', marginLeft: '60px' }} 
         onClick={() => { if (isUnlocked) setBalloonColor(currentColor); }}
       ></div>
-
       {/* Fourth Box */}
       <div 
         className="box" 
         style={{ backgroundColor: isUnlocked ? 'red' : 'grey', marginLeft: '60px' }} 
         onClick={() => { setIsUnlocked(false); setShowBalloon(false); setCurrentColor('red'); }}
       ></div>
-
       {/* Balloon */}
       {showBalloon && (
         <div 
