@@ -8,9 +8,11 @@ interface BalloonBoxesProps {
   left: number;
   playerPosition: number;
   jumpStage: number;
+  guardian: string;
+  updateStatus: (guardian: string, color: string) => void;
 }
 
-const BalloonBoxes: React.FC<BalloonBoxesProps> = ({ left, playerPosition, jumpStage }) => {
+const BalloonBoxes: React.FC<BalloonBoxesProps> = ({ left, playerPosition, jumpStage, guardian, updateStatus }) => {
   const [isUnlocked, setIsUnlocked] = useState(false);
   const [balloonColor, setBalloonColor] = useState('red');
   const [blockTwoColor, setBlockTwoColor] = useState('red');
@@ -50,7 +52,7 @@ const BalloonBoxes: React.FC<BalloonBoxesProps> = ({ left, playerPosition, jumpS
       // Box Two Collision - change the color of the block
       else if (playerRight >= boxBounds.boxTwo.start && playerLeft <= boxBounds.boxTwo.end) {
         if (isUnlocked) {
-          const colors = ['red', 'green', 'orange', 'blue'];
+          const colors = ['red', 'green', 'orange', 'blue', 'purple'];
           if (blockTwoColorRef.current === balloonColorRef.current) {
             blockTwoColorRef.current = colors[(colors.indexOf(blockTwoColorRef.current) + 1) % colors.length];
             // console.log(blockTwoColorRef.current, 'top');
@@ -102,8 +104,9 @@ const BalloonBoxes: React.FC<BalloonBoxesProps> = ({ left, playerPosition, jumpS
       setShowBalloon(showBalloonRef.current);
       setBlockTwoColor(blockTwoColorRef.current);
       setBalloonColor(balloonColorRef.current);
+      updateStatus(guardian, balloonColorRef.current);
     }
-  }, [jumpStage]);
+  }, [jumpStage, guardian, updateStatus]);
 
   return (
     <div className="balloon-box-container" style={{ left: `${left}px` }}>
@@ -134,6 +137,11 @@ const BalloonBoxes: React.FC<BalloonBoxesProps> = ({ left, playerPosition, jumpS
           style={{ backgroundColor: balloonColor, top: '-100px' }}
         ></div>
       )}
+      {/* Guardian */}
+      <div
+          className="guardian"
+          style={{ backgroundColor: balloonColor, top: '-100px' }}
+        ><p>{guardian}</p></div>
     </div>
   );
 };

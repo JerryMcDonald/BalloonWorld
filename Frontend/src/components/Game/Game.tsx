@@ -7,10 +7,23 @@ import './Game.css';
 const Game: React.FC = () => {
   // useRef is like having a backstage pass in a React component. It lets you directly access and interact with the DOM, manipulate it, and keep some values around without causing any drama (re-renders). 
   const gameContainerRef = useRef<HTMLDivElement>(null);
-  const landWidth = 4000; // Specific width of the land
+  const landWidth = 6000; // Specific width of the land
   // Set initial player position to the middle of the viewport
   const [playerPosition, setPlayerPosition] = useState(window.innerWidth / 2);
   const [jumpStage, setJumpStage] = useState(0); // 0: on ground, 1: mid-jump, 2: top of jump
+
+  const [balloonStatus, setBalloonStatus] = useState({
+    BalloonKing: false,
+    BalloonGenie: false,
+    BalloonSomething: false
+  });
+
+  const updateBalloonStatus = (guardian: string, color: string) => {
+    setBalloonStatus(prevStatus => ({
+      ...prevStatus,
+      [guardian]: color === (guardian === 'BalloonKing' ? 'green' : guardian === 'BalloonGenie' ? 'purple' : 'blue')
+    }));
+  };
 
   // This useEffect is the key to the scrolling and jumping effect
   useEffect(() => {
@@ -79,10 +92,12 @@ const Game: React.FC = () => {
     <div ref={gameContainerRef} className="game-container">
       <div className="land"></div>
       <div className="player" style={{ left: `${playerPosition}px`, bottom: getJumpPosition() }}></div>
-      <BalloonBoxes left={1500} playerPosition={playerPosition} jumpStage={jumpStage} />
-      <BalloonBoxes left={2000} playerPosition={playerPosition} jumpStage={jumpStage} />
-      <BalloonBoxes left={2500} playerPosition={playerPosition} jumpStage={jumpStage} />
-
+      <BalloonBoxes left={3000} playerPosition={playerPosition} jumpStage={jumpStage} guardian={'BalloonKing'} updateStatus={updateBalloonStatus} />
+<BalloonBoxes left={3500} playerPosition={playerPosition} jumpStage={jumpStage} guardian={'BalloonGenie'} updateStatus={updateBalloonStatus} />
+<BalloonBoxes left={4000} playerPosition={playerPosition} jumpStage={jumpStage} guardian={'BalloonSomething'} updateStatus={updateBalloonStatus} />
+{!(balloonStatus.BalloonKing && balloonStatus.BalloonGenie && balloonStatus.BalloonSomething) && (
+      <div className="barrier" style={{ left: '4500px' }}></div>
+    )}
     </div>
   );
 };
