@@ -14,10 +14,11 @@ interface BalloonBoxesProps {
   initialBalloonStatus:string;
   initialBalloonId: number;
   guardian: string;
-  updateStatus: (guardian: string, color: string, showBalloon: boolean) => void;
+  updateGuardians: (id: number, guardian: string, color: string) => void;
 }
 
-const BalloonBoxes: React.FC<BalloonBoxesProps> = ({ left, playerPosition, jumpStage, initialBalloonStatus, initialBalloonId, guardian, updateStatus }) => {
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+const BalloonBoxes: React.FC<BalloonBoxesProps> = ({ left, playerPosition, jumpStage, initialBalloonStatus, initialBalloonId, guardian, updateGuardians }) => {
   const [isUnlocked, setIsUnlocked] = useState(false);
   const [balloonColor, setBalloonColor] = useState('red');
   const [blockTwoColor, setBlockTwoColor] = useState('red');
@@ -63,6 +64,7 @@ const BalloonBoxes: React.FC<BalloonBoxesProps> = ({ left, playerPosition, jumpS
             const response = await addBalloon({color: blockTwoColorRef.current, guardian: guardian });
             if (response.id) {
               balloonIdRef.current = response.id
+              updateGuardians(response.id, guardian, blockTwoColorRef.current)
             }
             console.log(response, 'added balloon')
           } catch (error) {
@@ -95,6 +97,7 @@ const BalloonBoxes: React.FC<BalloonBoxesProps> = ({ left, playerPosition, jumpS
           if (balloonIdRef.current) {
             try {
               await updateBalloon({ id: balloonIdRef.current, color: blockTwoColorRef.current, guardian: guardian } );
+              updateGuardians(balloonIdRef.current, guardian, blockTwoColorRef.current)
               console.log('updated balloon')
             } catch (error) {
               console.error('Failed to update balloon:', error);
@@ -115,6 +118,8 @@ const BalloonBoxes: React.FC<BalloonBoxesProps> = ({ left, playerPosition, jumpS
           if (balloonIdRef.current) {
             try {
               await deleteBalloon(balloonIdRef.current);
+              updateGuardians(balloonIdRef.current, guardian, 'noBalloon')
+
               console.log('deleted balloon')
             } catch (error) {
               console.error('Failed to delete balloon:', error);
@@ -124,6 +129,7 @@ const BalloonBoxes: React.FC<BalloonBoxesProps> = ({ left, playerPosition, jumpS
         }
       }
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [boxBounds, isUnlocked, guardian]);
 
   useEffect(() => {
@@ -158,10 +164,10 @@ const BalloonBoxes: React.FC<BalloonBoxesProps> = ({ left, playerPosition, jumpS
       if (balloonColorRef.current !== balloonColor) {
         // updateStatus(guardian, balloonColorRef.current);
         setBalloonColor(balloonColorRef.current);
-        updateStatus(guardian, balloonColorRef.current, showBalloonRef.current);
+        // updateStatus(guardian, balloonColorRef.current, showBalloonRef.current);
       }
     }
-  }, [jumpStage, guardian, updateStatus, balloonColor]);
+  }, [jumpStage, guardian, balloonColor]);
 
   return (
     <div className="balloon-box-container" style={{ left: `${left}px` }}>

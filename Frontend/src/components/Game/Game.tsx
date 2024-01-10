@@ -11,15 +11,15 @@ interface Guardians {
   // [key: string]: string;
   BalloonKing: {
     balloonStatus: string,
-    initialBalloonId: number, 
+    balloonId: number, 
   },
   BalloonGenie: {
     balloonStatus: string,
-    initialBalloonId: number, 
+    balloonId: number, 
   },
   BalloonSomething: {
     balloonStatus: string,
-    initialBalloonId: number, 
+    balloonId: number, 
   }
 }
 
@@ -42,26 +42,32 @@ const Game: React.FC = () => {
   const [jumpStage, setJumpStage] = useState(0); // 0: on ground, 1: mid-jump, 2: top of jump
 
   // maintain a state that tracks whether each Guardian has the correct balloon color
-  const [balloonStatus, setBalloonStatus] = useState({
-    BalloonKing: false,
-    BalloonGenie: false,
-    BalloonSomething: false
-  });
+  const [openBarrier, setOpenBarrier] = useState(false);
 
   const [guardians, setGuardians] = useState<Guardians>({
     BalloonKing: {
       balloonStatus: 'noBalloon',
-      initialBalloonId: 0,
+      balloonId: 0,
     },
     BalloonGenie: {
       balloonStatus: 'noBalloon',
-      initialBalloonId: 0,
+      balloonId: 0,
     },
     BalloonSomething: {
       balloonStatus: 'noBalloon',
-      initialBalloonId: 0,
+      balloonId: 0,
     },
   });
+
+  const updateGuardians = (id: number, guardianName: string, color: string) => {
+    setGuardians(prevStatus => ({
+      ...prevStatus,
+      [guardianName]: {
+        balloonStatus: color,
+        balloonId: id
+      }
+    }));
+  };
 
 
   useEffect(() => {
@@ -76,15 +82,15 @@ const Game: React.FC = () => {
         const updatedGuardianStatus = {
           BalloonKing: {
             balloonStatus: 'noBalloon',
-            initialBalloonId: 0,
+            balloonId: 0,
           },
           BalloonGenie: {
             balloonStatus: 'noBalloon',
-            initialBalloonId: 0,
+            balloonId: 0,
           },
           BalloonSomething: {
             balloonStatus: 'noBalloon',
-            initialBalloonId: 0,
+            balloonId: 0,
           },
         };
 
@@ -93,7 +99,7 @@ const Game: React.FC = () => {
           if (key in updatedGuardianStatus && balloon.id) {
             updatedGuardianStatus[key] = {
               balloonStatus: balloon.color,
-              initialBalloonId: balloon.id,
+              balloonId: balloon.id,
             };
           }
         });
@@ -108,17 +114,6 @@ const Game: React.FC = () => {
 
     fetchBalloons();
   }, []); // Empty dependency array ensures this runs once on mount
-
-  // determines whether all conditions are met to lift the barrier
-  const allBalloonsReady = balloonStatus.BalloonKing && balloonStatus.BalloonGenie && balloonStatus.BalloonSomething;
-
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const updateBalloonStatus = (guardian: string, color: string, showBalloon: boolean) => {
-    setBalloonStatus(prevStatus => ({
-      ...prevStatus,
-      [guardian]: color === (guardian === 'BalloonKing' ? 'green' : guardian === 'BalloonGenie' ? 'purple' : 'blue') && showBalloon
-    }));
-  };
 
   //  callback to pass to the HotAirBalloon component to be triggered when the player jumps on the hot air balloon.
   const handlePlayerJumpOnBalloon = () => {
@@ -141,7 +136,7 @@ const Game: React.FC = () => {
             // Calculate the new position
             const newPosition = prev + moveStep;
             // This code checks if allBalloonsReady is false (meaning the barrier is not lifted) and if the player's new position would be past the barrier. If both conditions are met, the player's position is set to just before the barrier.
-            if (!allBalloonsReady && newPosition >= barrierPosition - playerWidth) {
+            if (!openBarrier && newPosition >= barrierPosition - playerWidth) {
               return barrierPosition - playerWidth;
             }
             // Allow movement within the boundaries of the land
@@ -168,7 +163,7 @@ const Game: React.FC = () => {
     return () => {
       window.removeEventListener('keydown', handleKeyDown);
     };
-  }, [allBalloonsReady, jumpStage]);
+  }, [openBarrier, jumpStage]);
 
 
 
@@ -187,6 +182,16 @@ const Game: React.FC = () => {
     }
   }, [playerPosition]);
 
+  // UseEffect to check if barrier should be open
+  useEffect(() => {
+    // This checks if the game container (div with ref={gameContainerRef}) is currently available in the DOM. It's a safety check to ensure the container exists before trying to modify it.
+    if (guardians.BalloonKing.balloonStatus === 'green' && guardians.BalloonGenie.balloonStatus === 'purple' && guardians.BalloonSomething.balloonStatus === 'blue') {
+      setOpenBarrier(true)
+    } else {
+      setOpenBarrier(false)
+    }
+  }, [guardians]);
+
   // Function to determine player's bottom position based on jump stage
   const getJumpPosition = () => {
     switch (jumpStage) {
@@ -202,10 +207,10 @@ const Game: React.FC = () => {
       {!isPlayerOnBalloon && (
         <div className="player" style={{ left: `${playerPosition}px`, bottom: getJumpPosition() }}></div>
       )}
-      <BalloonBoxes left={3000} playerPosition={playerPosition} jumpStage={jumpStage} initialBalloonStatus={guardians.BalloonKing.balloonStatus} guardian={'BalloonKing'} updateStatus={updateBalloonStatus} initialBalloonId={guardians.BalloonKing.initialBalloonId} />
-      <BalloonBoxes left={3500} playerPosition={playerPosition} jumpStage={jumpStage} initialBalloonStatus={guardians.BalloonGenie.balloonStatus} guardian={'BalloonGenie'} updateStatus={updateBalloonStatus} initialBalloonId={guardians.BalloonGenie.initialBalloonId}/>
-      <BalloonBoxes left={4000} playerPosition={playerPosition} jumpStage={jumpStage} initialBalloonStatus={guardians.BalloonSomething.balloonStatus} guardian={'BalloonSomething'} updateStatus={updateBalloonStatus} initialBalloonId={guardians.BalloonSomething.initialBalloonId}/>
-      <Barrier isLifted={allBalloonsReady} />
+      <BalloonBoxes left={3000} playerPosition={playerPosition} jumpStage={jumpStage} initialBalloonStatus={guardians.BalloonKing.balloonStatus} guardian={'BalloonKing'} updateGuardians={updateGuardians} initialBalloonId={guardians.BalloonKing.balloonId} />
+      <BalloonBoxes left={3500} playerPosition={playerPosition} jumpStage={jumpStage} initialBalloonStatus={guardians.BalloonGenie.balloonStatus} guardian={'BalloonGenie'} updateGuardians={updateGuardians} initialBalloonId={guardians.BalloonGenie.balloonId}/>
+      <BalloonBoxes left={4000} playerPosition={playerPosition} jumpStage={jumpStage} initialBalloonStatus={guardians.BalloonSomething.balloonStatus} guardian={'BalloonSomething'} updateGuardians={updateGuardians} initialBalloonId={guardians.BalloonSomething.balloonId}/>
+      <Barrier isLifted={openBarrier} />
       <HotAirBalloon playerPosition={playerPosition} jumpStage={jumpStage} playerWidth={playerWidth} onPlayerJumpOn={handlePlayerJumpOnBalloon} />
     </div>
   );
