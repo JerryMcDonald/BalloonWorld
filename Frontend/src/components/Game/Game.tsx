@@ -62,6 +62,7 @@ const Game: React.FC = () => {
       // Scroll the container to keep the player centered, but don't exceed the land bounds
       container.scrollLeft = Math.min(Math.max(0, playerPosition - halfWindow), landWidth - window.innerWidth);
       // As the player moves right, scrollLeft increases because the viewport is moving to the right to follow the player, revealing more of the land on the left side.
+      console.log(playerPosition, 'position')
     }
   }, [playerPosition]);
 
@@ -78,9 +79,9 @@ const Game: React.FC = () => {
     <div ref={gameContainerRef} className="game-container">
       <div className="land"></div>
       <div className="player" style={{ left: `${playerPosition}px`, bottom: getJumpPosition() }}></div>
+      <BalloonBoxes left={1500} playerPosition={playerPosition} jumpStage={jumpStage} />
+      <BalloonBoxes left={2000} playerPosition={playerPosition} jumpStage={jumpStage} />
       <BalloonBoxes left={2500} playerPosition={playerPosition} jumpStage={jumpStage} />
-      <BalloonBoxes left={3000} playerPosition={playerPosition} jumpStage={jumpStage} />
-      <BalloonBoxes left={3500} playerPosition={playerPosition} jumpStage={jumpStage} />
 
     </div>
   );
