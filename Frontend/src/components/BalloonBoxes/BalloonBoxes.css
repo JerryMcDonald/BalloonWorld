@@ -20,6 +20,19 @@
     position: absolute;
     width: 50px;
     height: 50px;
+    left: 190px;
     border-radius: 50%; /* Make it a circle */
+  }
+
+  .guardian {
+    position: absolute;
+    width: 0;  
+    height: 0;  
+    border-left: 50px solid transparent; 
+    border-right: 50px solid transparent; 
+    left: 10px;
+    border-bottom: 50px solid green; 
+
+    margin: 2rem; d
   }
   
