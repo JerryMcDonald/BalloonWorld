@@ -2,6 +2,7 @@
 
 import React, { useState, useEffect, useCallback, useMemo, useRef } from 'react';
 import './BalloonBoxes.css';
+import Guardian from '../Guardian/Guardian';
 
 // Define a type for the component props
 interface BalloonBoxesProps {
@@ -35,6 +36,10 @@ const BalloonBoxes: React.FC<BalloonBoxesProps> = ({ left, playerPosition, jumpS
     boxThree: { start: left + 180, end: left + 210 },
     boxFour: { start: left + 270, end: left + 300 }
   }), [left]);
+
+  // Determine the guardian's color
+  const guardianColor = guardian === 'BalloonKing' ? 'green' :
+                        guardian === 'BalloonGenie' ? 'purple' : 'blue';
 
 
 
@@ -138,10 +143,11 @@ const BalloonBoxes: React.FC<BalloonBoxesProps> = ({ left, playerPosition, jumpS
         ></div>
       )}
       {/* Guardian */}
-      <div
-          className="guardian"
-          style={{ backgroundColor: balloonColor, top: '-100px' }}
-        ><p>{guardian}</p></div>
+      <Guardian
+        color={guardianColor}
+        hasBalloon={showBalloon}
+        favoriteBalloon={balloonColor === guardianColor}
+      />
     </div>
   );
 };

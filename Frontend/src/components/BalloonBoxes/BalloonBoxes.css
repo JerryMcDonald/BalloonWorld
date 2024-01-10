@@ -24,26 +24,8 @@
     border-radius: 50%; /* Make it a circle */
   }
 
-  .guardian {
-    position: absolute;
-    width: 0;  
-    height: 0;  
-    border-left: 50px solid transparent; 
-    border-right: 50px solid transparent; 
-    left: 10px;
-    border-bottom: 50px solid green; 
-
-    margin: 2rem; 
-  }
 
 
-.barrier {
-  position: absolute;
-  bottom: calc(15% + 20px);
-  left: 4500px;
-  width: 2px;
-  height: 20%;
-  background-color: black; /* Or any color of your choice */
-}
+
 
   

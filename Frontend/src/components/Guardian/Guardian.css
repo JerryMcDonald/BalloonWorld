@@ -1,0 +1,25 @@
+/* src/components/Guardian/Guardian.css */
+
+.guardian {
+    position: absolute;
+    width: 0;
+    height: 0;
+    left: 10px;
+    border-style: solid;
+    border-width: 50px 0 50px 86.6px; /* Creates a triangle */
+    margin: 20px;
+    bottom: calc(15% + 200px);
+  }
+  
+  .guardian.left {
+    transform: rotate(90deg);
+  }
+  
+  .guardian.right {
+    transform: rotate(180deg);
+  }
+  
+  .guardian.up {
+    transform: rotate(-90deg);
+    
+  }
