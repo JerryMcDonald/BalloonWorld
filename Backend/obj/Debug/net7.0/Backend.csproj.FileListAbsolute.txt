@@ -1,0 +1,7 @@
+C:\Users\jmcdonald49\Projects\BalloonWorld\Backend\obj\Debug\net7.0\Backend.csproj.AssemblyReference.cache
+C:\Users\jmcdonald49\Projects\BalloonWorld\Backend\obj\Debug\net7.0\Backend.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\jmcdonald49\Projects\BalloonWorld\Backend\obj\Debug\net7.0\Backend.AssemblyInfoInputs.cache
+C:\Users\jmcdonald49\Projects\BalloonWorld\Backend\obj\Debug\net7.0\Backend.AssemblyInfo.cs
+C:\Users\jmcdonald49\Projects\BalloonWorld\Backend\obj\Debug\net7.0\Backend.csproj.CoreCompileInputs.cache
+C:\Users\jmcdonald49\Projects\BalloonWorld\Backend\obj\Debug\net7.0\Backend.MvcApplicationPartsAssemblyInfo.cs
+C:\Users\jmcdonald49\Projects\BalloonWorld\Backend\obj\Debug\net7.0\Backend.MvcApplicationPartsAssemblyInfo.cache
