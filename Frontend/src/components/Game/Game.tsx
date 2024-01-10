@@ -2,6 +2,7 @@
 
 import React, { useState, useEffect, useRef } from 'react';
 import BalloonBoxes from '../BalloonBoxes/BalloonBoxes';
+import Barrier from '../Barrier/Barrier';
 import './Game.css';
 
 const Game: React.FC = () => {
@@ -18,10 +19,16 @@ const Game: React.FC = () => {
     BalloonSomething: false
   });
 
-  const updateBalloonStatus = (guardian: string, color: string) => {
+  const allBalloonsReady = balloonStatus.BalloonKing && balloonStatus.BalloonGenie && balloonStatus.BalloonSomething;
+
+
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  const updateBalloonStatus = (guardian: string, _color: string, showBalloon: boolean) => {
     setBalloonStatus(prevStatus => ({
       ...prevStatus,
-      [guardian]: color === (guardian === 'BalloonKing' ? 'green' : guardian === 'BalloonGenie' ? 'purple' : 'blue')
+      // [guardian]: color === (guardian === 'BalloonKing' ? 'green' : guardian === 'BalloonGenie' ? 'purple' : 'blue')
+      [guardian]: showBalloon
+
     }));
   };
 
@@ -95,9 +102,7 @@ const Game: React.FC = () => {
       <BalloonBoxes left={3000} playerPosition={playerPosition} jumpStage={jumpStage} guardian={'BalloonKing'} updateStatus={updateBalloonStatus} />
 <BalloonBoxes left={3500} playerPosition={playerPosition} jumpStage={jumpStage} guardian={'BalloonGenie'} updateStatus={updateBalloonStatus} />
 <BalloonBoxes left={4000} playerPosition={playerPosition} jumpStage={jumpStage} guardian={'BalloonSomething'} updateStatus={updateBalloonStatus} />
-{!(balloonStatus.BalloonKing && balloonStatus.BalloonGenie && balloonStatus.BalloonSomething) && (
-      <div className="barrier" style={{ left: '4500px' }}></div>
-    )}
+<Barrier isLifted={allBalloonsReady} />
     </div>
   );
 };

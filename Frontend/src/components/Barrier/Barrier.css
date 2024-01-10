@@ -1,0 +1,15 @@
+/* src/components/Barrier/Barrier.css */
+
+.barrier {
+    position: absolute;
+    bottom: calc(15% + 20px);
+    left: 4500px;
+    width: 2px;
+    height: 20%;
+    background-color: black;
+    transition: bottom 0.5s ease;
+  }
+  
+  .barrier.lifted {
+    bottom: calc(35% + 20px); /* Adjust the value to lift the barrier */
+  }

@@ -9,7 +9,7 @@ interface BalloonBoxesProps {
   playerPosition: number;
   jumpStage: number;
   guardian: string;
-  updateStatus: (guardian: string, color: string) => void;
+  updateStatus: (guardian: string, color: string, showBalloon: boolean) => void;
 }
 
 const BalloonBoxes: React.FC<BalloonBoxesProps> = ({ left, playerPosition, jumpStage, guardian, updateStatus }) => {
@@ -104,7 +104,7 @@ const BalloonBoxes: React.FC<BalloonBoxesProps> = ({ left, playerPosition, jumpS
       setShowBalloon(showBalloonRef.current);
       setBlockTwoColor(blockTwoColorRef.current);
       setBalloonColor(balloonColorRef.current);
-      updateStatus(guardian, balloonColorRef.current);
+      updateStatus(guardian, balloonColorRef.current, showBalloonRef.current);
     }
   }, [jumpStage, guardian, updateStatus]);
 
