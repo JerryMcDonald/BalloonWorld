@@ -30,9 +30,9 @@ export const addBalloon = async (balloonData: Balloon): Promise<Balloon> => {
     }
 };
 
-export const updateBalloon = async (id: number, balloonData: Balloon): Promise<Balloon> => {
+export const updateBalloon = async (balloonData: Balloon): Promise<Balloon> => {
   try {
-      const response = await axios.put<Balloon>(`${backendUrl}/${id}`, balloonData);
+      const response = await axios.put<Balloon>(`${backendUrl}/${balloonData.id}`, balloonData);
       return response.data;
   } catch (error) {
       console.error('Error updating balloon:', error);

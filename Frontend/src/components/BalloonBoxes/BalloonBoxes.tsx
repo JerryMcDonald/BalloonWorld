@@ -3,21 +3,26 @@
 import React, { useState, useEffect, useCallback, useMemo, useRef } from 'react';
 import './BalloonBoxes.css';
 import Guardian from '../Guardian/Guardian';
+import { addBalloon, deleteBalloon, updateBalloon } from '../../services/balloonService';
+
 
 // Define a type for the component props
 interface BalloonBoxesProps {
   left: number;
   playerPosition: number;
   jumpStage: number;
+  initialBalloonStatus:string;
+  initialBalloonId: number;
   guardian: string;
   updateStatus: (guardian: string, color: string, showBalloon: boolean) => void;
 }
 
-const BalloonBoxes: React.FC<BalloonBoxesProps> = ({ left, playerPosition, jumpStage, guardian, updateStatus }) => {
+const BalloonBoxes: React.FC<BalloonBoxesProps> = ({ left, playerPosition, jumpStage, initialBalloonStatus, initialBalloonId, guardian, updateStatus }) => {
   const [isUnlocked, setIsUnlocked] = useState(false);
   const [balloonColor, setBalloonColor] = useState('red');
   const [blockTwoColor, setBlockTwoColor] = useState('red');
   const [showBalloon, setShowBalloon] = useState(false);
+  // const [balloonId, setBalloonId] = useState(initialBalloonId)
 
   const playerLeft = playerPosition; // this is unnecessary but improves readability
   const playerRight = playerPosition + 30; // the player is 30px wide
@@ -27,6 +32,8 @@ const BalloonBoxes: React.FC<BalloonBoxesProps> = ({ left, playerPosition, jumpS
   const balloonColorRef = useRef(balloonColor);
   const blockTwoColorRef = useRef(blockTwoColor);
   const showBalloonRef = useRef(showBalloon);
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  const balloonIdRef = useRef(initialBalloonId)
 
   // Calculate the left and right bounds of this component's boxes
   // Although not a heavy computation, useMemo is good practice here because it will prevent unnecessary re-renders, also useMemo will clearly indicate that boxBounds should only update if left is changed. 
@@ -43,13 +50,24 @@ const BalloonBoxes: React.FC<BalloonBoxesProps> = ({ left, playerPosition, jumpS
 
 
 
-  const checkCollision = useCallback((playerLeft: number, playerRight: number) => {
+  const checkCollision = useCallback(async (playerLeft: number, playerRight: number) => {
     if (playerRight >= boxBounds.boxOne.start && playerLeft <= boxBounds.boxFour.end) {
 
       // Box One Collision
       if (playerRight >= boxBounds.boxOne.start && playerLeft <= boxBounds.boxOne.end) {
         if (!isUnlocked) {
           isUnlockedRef.current = true;
+          balloonColorRef.current = blockTwoColorRef.current;
+          showBalloonRef.current = true;
+          try {
+            const response = await addBalloon({color: blockTwoColorRef.current, guardian: guardian });
+            if (response.id) {
+              balloonIdRef.current = response.id
+            }
+            console.log(response, 'added balloon')
+          } catch (error) {
+            console.error('Failed to add balloon:', error);
+          }
         }
       }
 
@@ -74,18 +92,55 @@ const BalloonBoxes: React.FC<BalloonBoxesProps> = ({ left, playerPosition, jumpS
         if (isUnlocked) {
           balloonColorRef.current = blockTwoColorRef.current;
           showBalloonRef.current = true;
+          if (balloonIdRef.current) {
+            try {
+              await updateBalloon({ id: balloonIdRef.current, color: blockTwoColorRef.current, guardian: guardian } );
+              console.log('updated balloon')
+            } catch (error) {
+              console.error('Failed to update balloon:', error);
+              // Handle the error appropriately
+            }
+          }
+          
         }
       }
+
+    
 
       // Box Four Collision
       else if (playerRight >= boxBounds.boxFour.start && playerLeft <= boxBounds.boxFour.end) {
         if (isUnlocked) {
           isUnlockedRef.current = false;
           showBalloonRef.current = false;
+          if (balloonIdRef.current) {
+            try {
+              await deleteBalloon(balloonIdRef.current);
+              console.log('deleted balloon')
+            } catch (error) {
+              console.error('Failed to delete balloon:', error);
+              // Handle the error appropriately
+            }
+          }
         }
       }
     }
-  }, [boxBounds, isUnlocked]);
+  }, [boxBounds, isUnlocked, guardian]);
+
+  useEffect(() => {
+    if (initialBalloonStatus !== 'noBalloon') {
+      showBalloonRef.current = true;
+      setShowBalloon(true);
+      isUnlockedRef.current = true;
+      setIsUnlocked(true);
+      balloonColorRef.current = initialBalloonStatus
+      setBalloonColor(initialBalloonStatus)
+      blockTwoColorRef.current = initialBalloonStatus
+      setBlockTwoColor(initialBalloonStatus)
+      balloonIdRef.current = initialBalloonId
+      
+      // No need to directly set states here, as refs are updated in checkCollision
+    }
+  }, [initialBalloonStatus, initialBalloonId]);
 
   useEffect(() => {
     if (jumpStage === jumpPeakStage) {
