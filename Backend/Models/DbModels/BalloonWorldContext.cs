@@ -1,9 +1,9 @@
 using Backend.Models;
 using Microsoft.EntityFrameworkCore;
 
-public class LibraryContext : DbContext 
+public class BalloonWorldContext : DbContext 
 {
-    public LibraryContext(DbContextOptions<LibraryContext> options)
+    public BalloonWorldContext(DbContextOptions<BalloonWorldContext> options)
         : base(options)
         {
 
