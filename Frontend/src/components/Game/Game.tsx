@@ -9,16 +9,18 @@ const Game: React.FC = () => {
   // useRef is like having a backstage pass in a React component. It lets you directly access and interact with the DOM, manipulate it, and keep some values around without causing any drama (re-renders). 
   const gameContainerRef = useRef<HTMLDivElement>(null);
   const landWidth = 6000; // Specific width of the land
+  const barrierPosition = 4500; // Position of the barrier
+  const playerWidth = 30; // the player is 30px wide
   // Set initial player position to the middle of the viewport
   const [playerPosition, setPlayerPosition] = useState(window.innerWidth / 2);
   const [jumpStage, setJumpStage] = useState(0); // 0: on ground, 1: mid-jump, 2: top of jump
-
+  // maintain a state that tracks whether each Guardian has the correct balloon color
   const [balloonStatus, setBalloonStatus] = useState({
     BalloonKing: false,
     BalloonGenie: false,
     BalloonSomething: false
-  });
-
+  }); 
+  // determines whether all conditions are met to lift the barrier
   const allBalloonsReady = balloonStatus.BalloonKing && balloonStatus.BalloonGenie && balloonStatus.BalloonSomething;
 
 
@@ -42,11 +44,19 @@ const Game: React.FC = () => {
           // Math.max is used to ensure that the player's position doesn't go below 0, which is the starting point of the land. It's like saying, "Move left, but stop if you reach the very beginning of the land."
           setPlayerPosition(prev => Math.max(prev - moveStep, 0));
           break;
-        case 'ArrowRight':
-        case 'd':
-          // Math.min ensures that the player doesn't go past the right edge of the land (landWidth - 30). It's like saying, "Move right, but don't go off the edge of the land."
-          setPlayerPosition(prev => Math.min(prev + moveStep, landWidth - 30));
-          break;
+          case 'ArrowRight':
+            case 'd':
+              setPlayerPosition(prev => {
+                // Calculate the new position
+                const newPosition = prev + moveStep;
+                // This code checks if allBalloonsReady is false (meaning the barrier is not lifted) and if the player's new position would be past the barrier. If both conditions are met, the player's position is set to just before the barrier.
+                if (!allBalloonsReady && newPosition >= barrierPosition - playerWidth) {
+                  return barrierPosition - playerWidth;
+                }
+                // Allow movement within the boundaries of the land
+                return Math.min(newPosition, landWidth - playerWidth);
+              });
+              break;
         case ' ':
         case 'w':
         case 'ArrowUp':
@@ -67,7 +77,7 @@ const Game: React.FC = () => {
     return () => {
       window.removeEventListener('keydown', handleKeyDown);
     };
-  }, [jumpStage]);
+  }, [allBalloonsReady, jumpStage]);
 
   
 
