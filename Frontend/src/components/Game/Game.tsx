@@ -5,6 +5,7 @@ import BalloonBoxes from '../BalloonBoxes/BalloonBoxes';
 import Barrier from '../Barrier/Barrier';
 import HotAirBalloon from '../HotAirBalloon/HotAirBalloon';
 import './Game.css';
+import { getBalloons } from '../../services/balloonService';
 
 const Game: React.FC = () => {
   // useRef is like having a backstage pass in a React component. It lets you directly access and interact with the DOM, manipulate it, and keep some values around without causing any drama (re-renders). 
@@ -30,6 +31,22 @@ const Game: React.FC = () => {
     BalloonGenie: false,
     BalloonSomething: false
   }); 
+
+  useEffect(() => {
+    const fetchBalloons = async () => {
+        try {
+            const fetchedBalloons = await getBalloons();
+            // iterate through each balloon update the guardian status for each balloon
+            // setBalloons(fetchedBalloons);
+            console.log('balloons', fetchedBalloons)
+        } catch (error) {
+            console.error('Failed to fetch balloons:', error);
+            // Handle the error appropriately
+        }
+    };
+
+    fetchBalloons();
+}, []); // Empty dependency array ensures this runs once on mount
 
   // determines whether all conditions are met to lift the barrier
   const allBalloonsReady = balloonStatus.BalloonKing && balloonStatus.BalloonGenie && balloonStatus.BalloonSomething;
@@ -105,7 +122,7 @@ const Game: React.FC = () => {
       // Scroll the container to keep the player centered, but don't exceed the land bounds
       container.scrollLeft = Math.min(Math.max(0, playerPosition - halfWindow), landWidth - window.innerWidth);
       // As the player moves right, scrollLeft increases because the viewport is moving to the right to follow the player, revealing more of the land on the left side.
-      console.log(playerPosition, 'position')
+      // console.log(playerPosition, 'position')
     }
   }, [playerPosition]);
 
