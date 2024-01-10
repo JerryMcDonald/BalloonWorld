@@ -9,21 +9,30 @@ import './Game.css';
 const Game: React.FC = () => {
   // useRef is like having a backstage pass in a React component. It lets you directly access and interact with the DOM, manipulate it, and keep some values around without causing any drama (re-renders). 
   const gameContainerRef = useRef<HTMLDivElement>(null);
+
   const landWidth = 6000; // Specific width of the land
+
   const barrierPosition = 4500; // Position of the barrier
+
   const playerWidth = 30; // the player is 30px wide
+
   // Set initial player position to the middle of the viewport
   const [playerPosition, setPlayerPosition] = useState(window.innerWidth / 2);
+
+  // tracks whether the player is on the hot air balloon so we can make the original player disappear 
+  const [isPlayerOnBalloon, setIsPlayerOnBalloon] = useState(false); 
+
   const [jumpStage, setJumpStage] = useState(0); // 0: on ground, 1: mid-jump, 2: top of jump
+
   // maintain a state that tracks whether each Guardian has the correct balloon color
   const [balloonStatus, setBalloonStatus] = useState({
     BalloonKing: false,
     BalloonGenie: false,
     BalloonSomething: false
   }); 
+
   // determines whether all conditions are met to lift the barrier
   const allBalloonsReady = balloonStatus.BalloonKing && balloonStatus.BalloonGenie && balloonStatus.BalloonSomething;
-
 
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const updateBalloonStatus = (guardian: string, _color: string, showBalloon: boolean) => {
@@ -33,6 +42,11 @@ const Game: React.FC = () => {
       [guardian]: showBalloon
 
     }));
+  };
+
+  //  callback to pass to the HotAirBalloon component to be triggered when the player jumps on the hot air balloon.
+  const handlePlayerJumpOnBalloon = () => {
+    setIsPlayerOnBalloon(true);
   };
 
   // This useEffect is the key to the scrolling and jumping effect
@@ -109,12 +123,14 @@ const Game: React.FC = () => {
   return (
     <div ref={gameContainerRef} className="game-container">
       <div className="land"></div>
+      {!isPlayerOnBalloon && (
       <div className="player" style={{ left: `${playerPosition}px`, bottom: getJumpPosition() }}></div>
+    )}
       <BalloonBoxes left={3000} playerPosition={playerPosition} jumpStage={jumpStage} guardian={'BalloonKing'} updateStatus={updateBalloonStatus} />
       <BalloonBoxes left={3500} playerPosition={playerPosition} jumpStage={jumpStage} guardian={'BalloonGenie'} updateStatus={updateBalloonStatus} />
       <BalloonBoxes left={4000} playerPosition={playerPosition} jumpStage={jumpStage} guardian={'BalloonSomething'} updateStatus={updateBalloonStatus} />
       <Barrier isLifted={allBalloonsReady} />
-      <HotAirBalloon playerPosition={playerPosition} jumpStage={jumpStage} />
+      <HotAirBalloon playerPosition={playerPosition} jumpStage={jumpStage} playerWidth={playerWidth} onPlayerJumpOn={handlePlayerJumpOnBalloon} />
     </div>
   );
 };
