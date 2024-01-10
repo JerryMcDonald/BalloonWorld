@@ -6,9 +6,9 @@ using Microsoft.EntityFrameworkCore;
 [Route("api/[controller]")]
 public class BalloonsController : ControllerBase
 {
-    private readonly LibraryContext _context;
+    private readonly BalloonWorldContext _context;
 
-    public BalloonsController(LibraryContext context)
+    public BalloonsController(BalloonWorldContext context)
     {
         _context = context;
     }
