@@ -3,6 +3,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import BalloonBoxes from '../BalloonBoxes/BalloonBoxes';
 import Barrier from '../Barrier/Barrier';
+import HotAirBalloon from '../HotAirBalloon/HotAirBalloon';
 import './Game.css';
 
 const Game: React.FC = () => {
@@ -110,9 +111,10 @@ const Game: React.FC = () => {
       <div className="land"></div>
       <div className="player" style={{ left: `${playerPosition}px`, bottom: getJumpPosition() }}></div>
       <BalloonBoxes left={3000} playerPosition={playerPosition} jumpStage={jumpStage} guardian={'BalloonKing'} updateStatus={updateBalloonStatus} />
-<BalloonBoxes left={3500} playerPosition={playerPosition} jumpStage={jumpStage} guardian={'BalloonGenie'} updateStatus={updateBalloonStatus} />
-<BalloonBoxes left={4000} playerPosition={playerPosition} jumpStage={jumpStage} guardian={'BalloonSomething'} updateStatus={updateBalloonStatus} />
-<Barrier isLifted={allBalloonsReady} />
+      <BalloonBoxes left={3500} playerPosition={playerPosition} jumpStage={jumpStage} guardian={'BalloonGenie'} updateStatus={updateBalloonStatus} />
+      <BalloonBoxes left={4000} playerPosition={playerPosition} jumpStage={jumpStage} guardian={'BalloonSomething'} updateStatus={updateBalloonStatus} />
+      <Barrier isLifted={allBalloonsReady} />
+      <HotAirBalloon playerPosition={playerPosition} jumpStage={jumpStage} />
     </div>
   );
 };

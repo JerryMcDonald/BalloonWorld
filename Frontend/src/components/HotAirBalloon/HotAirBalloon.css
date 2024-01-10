@@ -1,0 +1,23 @@
+/* src/components/HotAirBalloon/HotAirBalloon.css */
+
+.hot-air-balloon {
+    position: absolute;
+    bottom: calc(15% + 20px);
+    width: 100px;
+    height: 100px;
+    background-color: black;
+    transition: bottom 5s ease;
+  }
+  
+  .hot-air-balloon.lift-off {
+    bottom: 200vh; /* Moves the balloon upwards out of view */
+  }
+  
+  .player-on-balloon {
+    position: absolute;
+    bottom: 100px; /* Position the player on top of the balloon */
+    left: 35px; /* Adjust based on player size and balloon position */
+    width: 30px; /* Player width */
+    height: 30px; /* Player height */
+    background-color: blue; /* Player color */
+  }
