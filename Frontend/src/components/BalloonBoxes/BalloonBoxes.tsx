@@ -50,7 +50,6 @@ const BalloonBoxes: React.FC<BalloonBoxesProps> = ({ left, playerPosition, jumpS
       if (playerRight >= boxBounds.boxOne.start && playerLeft <= boxBounds.boxOne.end) {
         if (!isUnlocked) {
           isUnlockedRef.current = true;
-          showBalloonRef.current = true;
         }
       }
 
@@ -60,17 +59,11 @@ const BalloonBoxes: React.FC<BalloonBoxesProps> = ({ left, playerPosition, jumpS
           const colors = ['red', 'green', 'orange', 'blue', 'purple'];
           if (blockTwoColorRef.current === balloonColorRef.current) {
             blockTwoColorRef.current = colors[(colors.indexOf(blockTwoColorRef.current) + 1) % colors.length];
-            // console.log(blockTwoColorRef.current, 'top');
-            // console.log(playerRight, 'right', boxBounds.boxTwo.start, 'start');
-            // console.log(playerLeft, 'left', boxBounds.boxTwo.end, 'end');
 
           } else {
             // remove the current balloon color from the choices
             const newColors = colors.filter(color => color !== balloonColorRef.current)
             blockTwoColorRef.current = newColors[(newColors.indexOf(blockTwoColorRef.current) + 1) % newColors.length];
-            // console.log(blockTwoColorRef.current, 'bottom');
-            // console.log(playerRight, 'right', boxBounds.boxTwo.start, 'start');
-            // console.log(playerLeft, 'left', boxBounds.boxTwo.end, 'end');
           }
 
         }
@@ -80,8 +73,7 @@ const BalloonBoxes: React.FC<BalloonBoxesProps> = ({ left, playerPosition, jumpS
       else if (playerRight >= boxBounds.boxThree.start && playerLeft <= boxBounds.boxThree.end) {
         if (isUnlocked) {
           balloonColorRef.current = blockTwoColorRef.current;
-          console.log(playerRight, 'right', boxBounds.boxThree.start, 'start', '3');
-            console.log(playerLeft, 'left', boxBounds.boxThree.end, 'end', '3');
+          showBalloonRef.current = true;
         }
       }
 
@@ -108,10 +100,13 @@ const BalloonBoxes: React.FC<BalloonBoxesProps> = ({ left, playerPosition, jumpS
       setIsUnlocked(isUnlockedRef.current);
       setShowBalloon(showBalloonRef.current);
       setBlockTwoColor(blockTwoColorRef.current);
-      setBalloonColor(balloonColorRef.current);
-      updateStatus(guardian, balloonColorRef.current, showBalloonRef.current);
+      if (balloonColorRef.current !== balloonColor) {
+        // updateStatus(guardian, balloonColorRef.current);
+        setBalloonColor(balloonColorRef.current);
+        updateStatus(guardian, balloonColorRef.current, showBalloonRef.current);
+      }
     }
-  }, [jumpStage, guardian, updateStatus]);
+  }, [jumpStage, guardian, updateStatus, balloonColor]);
 
   return (
     <div className="balloon-box-container" style={{ left: `${left}px` }}>
