@@ -35,12 +35,10 @@ const Game: React.FC = () => {
   const allBalloonsReady = balloonStatus.BalloonKing && balloonStatus.BalloonGenie && balloonStatus.BalloonSomething;
 
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const updateBalloonStatus = (guardian: string, _color: string, showBalloon: boolean) => {
+  const updateBalloonStatus = (guardian: string, color: string, showBalloon: boolean) => {
     setBalloonStatus(prevStatus => ({
       ...prevStatus,
-      // [guardian]: color === (guardian === 'BalloonKing' ? 'green' : guardian === 'BalloonGenie' ? 'purple' : 'blue')
-      [guardian]: showBalloon
-
+      [guardian]: color === (guardian === 'BalloonKing' ? 'green' : guardian === 'BalloonGenie' ? 'purple' : 'blue') && showBalloon
     }));
   };
 
