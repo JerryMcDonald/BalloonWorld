@@ -59,26 +59,32 @@ const Game: React.FC = () => {
     },
   });
 
+  const updatePlayerPosition = (newPosition: number) => {
+    // Ensure that the player does not move beyond the left edge of the land
+    newPosition = Math.max(newPosition, 0);
+  
+    // Prevent the player from moving past the barrier if it's not open
+    if (!openBarrier && newPosition >= barrierPosition - playerWidth) {
+      newPosition = barrierPosition - playerWidth;
+    }
+  
+    // Ensure that the player does not move beyond the right edge of the land
+    newPosition = Math.min(newPosition, landWidth - playerWidth);
+  
+    setPlayerPosition(newPosition);
+  };
+
   const handleKeyDown = useCallback((event: KeyboardEvent) => {
     const moveStep = 30; // Define the step the player moves on each key press
   
     switch (event.key) {
       case 'ArrowLeft':
       case 'a':
-        // Move left but not beyond the start of the land
-        setPlayerPosition(prev => Math.max(prev - moveStep, 0));
+        updatePlayerPosition(playerPosition - moveStep);
         break;
       case 'ArrowRight':
       case 'd':
-        // Move right but stop at the barrier if it's not open
-        setPlayerPosition(prev => {
-          const newPosition = prev + moveStep;
-          if (!openBarrier && newPosition >= barrierPosition - playerWidth) {
-            return barrierPosition - playerWidth; // Stop at the barrier
-          }
-          // Allow movement within the boundaries of the land
-          return Math.min(newPosition, landWidth - playerWidth);
-        });
+        updatePlayerPosition(playerPosition + moveStep);
         break;
       case ' ':
       case 'w':
@@ -91,11 +97,11 @@ const Game: React.FC = () => {
           setTimeout(() => setJumpStage(0), 600); // Back to ground
         }
         break;
-      // Include other cases if needed
       default:
         break;
     }
-  }, [openBarrier, barrierPosition, playerWidth, landWidth, jumpStage]);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [playerPosition, jumpStage, openBarrier, barrierPosition, playerWidth, landWidth]);
   
   
 
