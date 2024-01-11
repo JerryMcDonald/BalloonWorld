@@ -1,6 +1,6 @@
 // src/components/Game/Game.tsx
 
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, useCallback } from 'react';
 import BalloonBoxes from '../BalloonBoxes/BalloonBoxes';
 import Barrier from '../Barrier/Barrier';
 import HotAirBalloon from '../HotAirBalloon/HotAirBalloon';
@@ -59,16 +59,45 @@ const Game: React.FC = () => {
     },
   });
 
-  const updateGuardians = (id: number, guardianName: string, color: string) => {
-    setGuardians(prevStatus => ({
-      ...prevStatus,
-      [guardianName]: {
-        balloonStatus: color,
-        balloonId: id
-      }
-    }));
-  };
-
+  const handleKeyDown = useCallback((event: KeyboardEvent) => {
+    const moveStep = 30; // Define the step the player moves on each key press
+  
+    switch (event.key) {
+      case 'ArrowLeft':
+      case 'a':
+        // Move left but not beyond the start of the land
+        setPlayerPosition(prev => Math.max(prev - moveStep, 0));
+        break;
+      case 'ArrowRight':
+      case 'd':
+        // Move right but stop at the barrier if it's not open
+        setPlayerPosition(prev => {
+          const newPosition = prev + moveStep;
+          if (!openBarrier && newPosition >= barrierPosition - playerWidth) {
+            return barrierPosition - playerWidth; // Stop at the barrier
+          }
+          // Allow movement within the boundaries of the land
+          return Math.min(newPosition, landWidth - playerWidth);
+        });
+        break;
+      case ' ':
+      case 'w':
+      case 'ArrowUp':
+        // Jump logic: Start jump only if on the ground
+        if (jumpStage === 0) {
+          setJumpStage(1); // Mid-jump
+          setTimeout(() => setJumpStage(2), 200); // Top of jump
+          setTimeout(() => setJumpStage(1), 400); // Mid-jump again
+          setTimeout(() => setJumpStage(0), 600); // Back to ground
+        }
+        break;
+      // Include other cases if needed
+      default:
+        break;
+    }
+  }, [openBarrier, barrierPosition, playerWidth, landWidth, jumpStage]);
+  
+  
 
   useEffect(() => {
     const fetchBalloons = async () => {
@@ -115,55 +144,19 @@ const Game: React.FC = () => {
     fetchBalloons();
   }, []); // Empty dependency array ensures this runs once on mount
 
-  //  callback to pass to the HotAirBalloon component to be triggered when the player jumps on the hot air balloon.
-  const handlePlayerJumpOnBalloon = () => {
-    setIsPlayerOnBalloon(true);
-  };
 
   // This useEffect is the key to the scrolling and jumping effect
   useEffect(() => {
-    const handleKeyDown = (event: KeyboardEvent) => {
-      const moveStep = 30;
-      switch (event.key) {
-        case 'ArrowLeft':
-        case 'a':
-          // Math.max is used to ensure that the player's position doesn't go below 0, which is the starting point of the land. It's like saying, "Move left, but stop if you reach the very beginning of the land."
-          setPlayerPosition(prev => Math.max(prev - moveStep, 0));
-          break;
-        case 'ArrowRight':
-        case 'd':
-          setPlayerPosition(prev => {
-            // Calculate the new position
-            const newPosition = prev + moveStep;
-            // This code checks if allBalloonsReady is false (meaning the barrier is not lifted) and if the player's new position would be past the barrier. If both conditions are met, the player's position is set to just before the barrier.
-            if (!openBarrier && newPosition >= barrierPosition - playerWidth) {
-              return barrierPosition - playerWidth;
-            }
-            // Allow movement within the boundaries of the land
-            return Math.min(newPosition, landWidth - playerWidth);
-          });
-          break;
-        case ' ':
-        case 'w':
-        case 'ArrowUp':
-          if (jumpStage === 0) { // Start jump only if on ground
-            setJumpStage(1); // Mid-jump
-            setTimeout(() => setJumpStage(2), 200); // Top of jump
-            setTimeout(() => setJumpStage(1), 400); // Mid-jump again
-            setTimeout(() => setJumpStage(0), 600); // Back to ground
-          }
-          break;
-        default:
-          break;
-      }
-
-    };
+    // Attach the event listener when the component mounts
     window.addEventListener('keydown', handleKeyDown);
-
+  
+    // Return a cleanup function that removes the event listener
+    // This is important for preventing memory leaks
     return () => {
       window.removeEventListener('keydown', handleKeyDown);
     };
-  }, [openBarrier, jumpStage]);
+  }, [handleKeyDown]);
+  
 
 
 
@@ -191,6 +184,22 @@ const Game: React.FC = () => {
       setOpenBarrier(false)
     }
   }, [guardians]);
+
+
+  const updateGuardians = (id: number, guardianName: string, color: string) => {
+    setGuardians(prevStatus => ({
+      ...prevStatus,
+      [guardianName]: {
+        balloonStatus: color,
+        balloonId: id
+      }
+    }));
+  };
+
+  //  callback to pass to the HotAirBalloon component to be triggered when the player jumps on the hot air balloon.
+  const handlePlayerJumpOnBalloon = () => {
+    setIsPlayerOnBalloon(true);
+  };
 
   // Function to determine player's bottom position based on jump stage
   const getJumpPosition = () => {
