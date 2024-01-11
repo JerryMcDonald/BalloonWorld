@@ -6,6 +6,7 @@ import Barrier from '../Barrier/Barrier';
 import HotAirBalloon from '../HotAirBalloon/HotAirBalloon';
 import './Game.css';
 import { getBalloons } from '../../services/balloonService';
+import Land from '../Land/Land';
 
 interface Guardians {
   // [key: string]: string;
@@ -218,7 +219,7 @@ const Game: React.FC = () => {
 
   return (
     <div ref={gameContainerRef} className="game-container">
-      <div className="land"></div>
+      <Land />
       {!isPlayerOnBalloon && (
         <div className="player" style={{ left: `${playerPosition}px`, bottom: getJumpPosition() }}></div>
       )}
