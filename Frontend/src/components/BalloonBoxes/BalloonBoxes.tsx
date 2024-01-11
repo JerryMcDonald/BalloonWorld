@@ -25,7 +25,6 @@ const BalloonBoxes: React.FC<BalloonBoxesProps> = ({ left, playerPosition, jumpS
 
   const playerLeft = playerPosition; // this is unnecessary but improves readability
   const playerRight = playerPosition + 30; // the player is 30px wide
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const jumpPeakStage = 2; // 2 is the peak of the jump
 
   // Calculate the left and right bounds of this component's boxes
@@ -40,75 +39,87 @@ const BalloonBoxes: React.FC<BalloonBoxesProps> = ({ left, playerPosition, jumpS
   const guardianColor = guardian === 'BalloonKing' ? 'green' :
     guardian === 'BalloonGenie' ? 'purple' : 'blue';
 
-  const checkCollision = useCallback(async (playerLeft: number, playerRight: number) => {
+  const handleAddBalloon = async () => {
+    const response = await addBalloon({ color: balloonData.blockTwoColor, guardian: guardian });
+    if (response && response.id) {
+      const responseId: number = response.id; // Extracting ID for clarity.
+      setBalloonData(prevData => ({
+        ...prevData,
+        isUnlocked: true,
+        showBalloon: true,
+        balloonColor: balloonData.blockTwoColor,
+        balloonId: responseId
+      }));
+      updateGuardians(response.id, guardian, balloonData.blockTwoColor);
+    } else {
+      console.error('Failed to add balloon');
+    }
+  };
+
+  const handleUpdateBalloon = async () => {
+    if (balloonData.balloonId) {
+      const updatedBalloon = await updateBalloon({
+        id: balloonData.balloonId,
+        color: balloonData.blockTwoColor,
+        guardian: guardian
+      });
+
+      if (updatedBalloon) {
+        setBalloonData(prevData => ({
+          ...prevData,
+          balloonColor: balloonData.blockTwoColor
+        }));
+        updateGuardians(balloonData.balloonId, guardian, balloonData.blockTwoColor);
+      } else {
+        console.error('Failed to update balloon');
+      }
+    }
+  };
+
+  const handleDeleteBalloon = async () => {
+    if (balloonData.balloonId) {
+      const deleteSuccess = await deleteBalloon(balloonData.balloonId);
+
+      if (deleteSuccess) {
+        setBalloonData(prevData => ({
+          ...prevData,
+          isUnlocked: false,
+          showBalloon: false,
+          balloonId: 0
+        }));
+        updateGuardians(balloonData.balloonId, guardian, 'noBalloon');
+      } else {
+        console.error('Failed to delete balloon');
+      }
+    }
+  };
+
+  const handleCheckCollision = useCallback(async (playerLeft: number, playerRight: number) => {
     if (playerRight >= boxBounds.boxOne.start && playerLeft <= boxBounds.boxFour.end) {
 
       // Box One Collision
-      if (playerRight >= boxBounds.boxOne.start && playerLeft <= boxBounds.boxOne.end) {
-        if (!balloonData.isUnlocked) {
-          try {
-            const response = await addBalloon({ color: balloonData.blockTwoColor, guardian: guardian });
-            if (response.id) {
-              const int = response.id
-              setBalloonData(prevData => ({
-                ...prevData,
-                isUnlocked: true,
-                showBalloon: true,
-                balloonColor: balloonData.blockTwoColor,
-                balloonId: int
-              }));
-              updateGuardians(response.id, guardian, balloonData.blockTwoColor);
-            }
-          } catch (error) {
-            console.error('Failed to add balloon:', error);
-          }
-        }
+      if (playerRight >= boxBounds.boxOne.start && playerLeft <= boxBounds.boxOne.end && !balloonData.isUnlocked) {
+        await handleAddBalloon();
       }
 
-      // Box Two Collision - change the color of the block
-      else if (playerRight >= boxBounds.boxTwo.start && playerLeft <= boxBounds.boxTwo.end) {
-        if (balloonData.isUnlocked) {
-          const colors = ['red', 'green', 'orange', 'blue', 'purple'];
-          const newBlockTwoColor = colors[(colors.indexOf(balloonData.blockTwoColor) + 1) % colors.length];
-          setBalloonData(prevData => ({
-            ...prevData,
-            blockTwoColor: newBlockTwoColor
-          }));
-        }
+      // Box Two Collision
+      else if (playerRight >= boxBounds.boxTwo.start && playerLeft <= boxBounds.boxTwo.end && balloonData.isUnlocked) {
+        const colors = ['red', 'green', 'orange', 'blue', 'purple'];
+        const newBlockTwoColor = colors[(colors.indexOf(balloonData.blockTwoColor) + 1) % colors.length];
+        setBalloonData(prevData => ({
+          ...prevData,
+          blockTwoColor: newBlockTwoColor
+        }));
       }
 
       // Box Three Collision
-      else if (playerRight >= boxBounds.boxThree.start && playerLeft <= boxBounds.boxThree.end) {
-        if (balloonData.isUnlocked && balloonData.balloonId) {
-          try {
-            await updateBalloon({ id: balloonData.balloonId, color: balloonData.blockTwoColor, guardian: guardian });
-            setBalloonData(prevData => ({
-              ...prevData,
-              balloonColor: balloonData.blockTwoColor
-            }));
-            updateGuardians(balloonData.balloonId, guardian, balloonData.blockTwoColor);
-          } catch (error) {
-            console.error('Failed to update balloon:', error);
-          }
-        }
+      else if (playerRight >= boxBounds.boxThree.start && playerLeft <= boxBounds.boxThree.end && balloonData.isUnlocked) {
+        await handleUpdateBalloon();
       }
 
       // Box Four Collision
-      else if (playerRight >= boxBounds.boxFour.start && playerLeft <= boxBounds.boxFour.end) {
-        if (balloonData.isUnlocked && balloonData.balloonId) {
-          try {
-            await deleteBalloon(balloonData.balloonId);
-            setBalloonData(prevData => ({
-              ...prevData,
-              isUnlocked: false,
-              showBalloon: false,
-              balloonId: 0
-            }));
-            updateGuardians(balloonData.balloonId, guardian, 'noBalloon');
-          } catch (error) {
-            console.error('Failed to delete balloon:', error);
-          }
-        }
+      else if (playerRight >= boxBounds.boxFour.start && playerLeft <= boxBounds.boxFour.end && balloonData.isUnlocked) {
+        await handleDeleteBalloon();
       }
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -129,10 +140,10 @@ const BalloonBoxes: React.FC<BalloonBoxesProps> = ({ left, playerPosition, jumpS
 
   // React to changes in the game state such as jumpStage
   useEffect(() => {
-    if (jumpStage === 2) { // Assuming 2 is the peak of the jump
-      checkCollision(playerLeft, playerRight);
+    if (jumpStage === jumpPeakStage) { 
+      handleCheckCollision(playerLeft, playerRight);
     }
-  }, [jumpStage, playerLeft, playerRight, checkCollision]);
+  }, [jumpStage, playerLeft, playerRight, handleCheckCollision]);
 
   return (
     <div className="balloon-box-container" style={{ left: `${left}px` }}>
