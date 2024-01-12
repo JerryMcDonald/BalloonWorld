@@ -30,7 +30,7 @@ const Game: React.FC = () => {
 
   const landWidth = 6000; // Specific width of the land
 
-  const barrierPosition = 4500; // Position of the barrier
+  const barrierPosition = 3700; // Position of the barrier
 
   const playerWidth = 30; // the player is 30px wide
 
@@ -141,7 +141,7 @@ const Game: React.FC = () => {
         });
 
         setGuardians(updatedGuardianStatus)
-        console.log('guardians', updatedGuardianStatus)
+        // console.log('guardians', updatedGuardianStatus)
       } catch (error) {
         console.error('Failed to fetch balloons:', error);
         // Handle the error appropriately
@@ -223,9 +223,9 @@ const Game: React.FC = () => {
       {!isPlayerOnBalloon && (
         <div className="player" style={{ left: `${playerPosition}px`, bottom: getJumpPosition() }}></div>
       )}
-      <BalloonBoxes left={3000} playerPosition={playerPosition} jumpStage={jumpStage} initialBalloonStatus={guardians.BalloonKing.balloonStatus} guardian={'BalloonKing'} updateGuardians={updateGuardians} initialBalloonId={guardians.BalloonKing.balloonId} />
-      <BalloonBoxes left={3500} playerPosition={playerPosition} jumpStage={jumpStage} initialBalloonStatus={guardians.BalloonGenie.balloonStatus} guardian={'BalloonGenie'} updateGuardians={updateGuardians} initialBalloonId={guardians.BalloonGenie.balloonId}/>
-      <BalloonBoxes left={4000} playerPosition={playerPosition} jumpStage={jumpStage} initialBalloonStatus={guardians.BalloonSomething.balloonStatus} guardian={'BalloonSomething'} updateGuardians={updateGuardians} initialBalloonId={guardians.BalloonSomething.balloonId}/>
+      <BalloonBoxes left={2200} playerPosition={playerPosition} jumpStage={jumpStage} initialBalloonStatus={guardians.BalloonKing.balloonStatus} guardian={'BalloonKing'} updateGuardians={updateGuardians} initialBalloonId={guardians.BalloonKing.balloonId} />
+      <BalloonBoxes left={2700} playerPosition={playerPosition} jumpStage={jumpStage} initialBalloonStatus={guardians.BalloonGenie.balloonStatus} guardian={'BalloonGenie'} updateGuardians={updateGuardians} initialBalloonId={guardians.BalloonGenie.balloonId}/>
+      <BalloonBoxes left={3200} playerPosition={playerPosition} jumpStage={jumpStage} initialBalloonStatus={guardians.BalloonSomething.balloonStatus} guardian={'BalloonSomething'} updateGuardians={updateGuardians} initialBalloonId={guardians.BalloonSomething.balloonId}/>
       <Barrier isLifted={openBarrier} />
       <HotAirBalloon playerPosition={playerPosition} jumpStage={jumpStage} playerWidth={playerWidth} onPlayerJumpOn={handlePlayerJumpOnBalloon} />
     </div>
