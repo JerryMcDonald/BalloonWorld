@@ -24,8 +24,8 @@ const BalloonBoxes: React.FC<BalloonBoxesProps> = ({ left, playerPosition, jumpS
     balloonId: initialBalloonId,
   });
 
-  const playerLeft = playerPosition; // this is unnecessary but improves readability
-  const playerRight = playerPosition + 30; // the player is 30px wide
+  const AwesomeAfroLeft = playerPosition + 50; // players awesome afro starts at about 50px in from playerPosition
+  const AwesomeAfroRight = playerPosition + 80; // players awesome afro is about 30px wide
   const jumpPeakStage = 2; // 2 is the peak of the jump
 
   // Calculate the left and right bounds of this component's buttons
@@ -95,18 +95,25 @@ const BalloonBoxes: React.FC<BalloonBoxesProps> = ({ left, playerPosition, jumpS
     }
   };
 
-  const handleCheckCollision = useCallback(async (playerLeft: number, playerRight: number) => {
-    if (playerRight >= buttonBounds.boxOne.start && playerLeft <= buttonBounds.boxFour.end) {
+  const handleCheckCollision = useCallback(async (AwesomeAfroLeft: number, AwesomeAfroRight: number) => {
+    if (AwesomeAfroRight >= buttonBounds.boxOne.start && AwesomeAfroLeft <= buttonBounds.boxFour.end) {
 
       // Box One Collision
-      if (playerRight >= buttonBounds.boxOne.start && playerLeft <= buttonBounds.boxOne.end && !balloonData.isUnlocked) {
+      if (AwesomeAfroRight >= buttonBounds.boxOne.start && AwesomeAfroLeft <= buttonBounds.boxOne.end && !balloonData.isUnlocked) {
         await handleAddBalloon();
       }
 
       // Box Two Collision
-      else if (playerRight >= buttonBounds.boxTwo.start && playerLeft <= buttonBounds.boxTwo.end && balloonData.isUnlocked) {
+      else if (AwesomeAfroRight >= buttonBounds.boxTwo.start && AwesomeAfroLeft <= buttonBounds.boxTwo.end && balloonData.isUnlocked) {
         const colors = ['blue', 'green', 'purple', 'red', 'yellow'];
-        const newBlockTwoColor = colors[(colors.indexOf(balloonData.blockTwoColor) + 1) % colors.length];
+
+        const currentColorIndex: number = colors.indexOf(balloonData.blockTwoColor);
+        let nextColorIndex: number = (currentColorIndex + 1) % colors.length;
+        // we do not want to include the current balloon color on ButtonTwoColor change
+        if (colors[nextColorIndex] === balloonData.balloonColor) {
+          nextColorIndex  = (nextColorIndex + 1) % colors.length;
+        }
+        const newBlockTwoColor: string = colors[nextColorIndex];
         setBalloonData(prevData => ({
           ...prevData,
           blockTwoColor: newBlockTwoColor
@@ -114,12 +121,12 @@ const BalloonBoxes: React.FC<BalloonBoxesProps> = ({ left, playerPosition, jumpS
       }
 
       // Box Three Collision
-      else if (playerRight >= buttonBounds.boxThree.start && playerLeft <= buttonBounds.boxThree.end && balloonData.isUnlocked) {
+      else if (AwesomeAfroRight >= buttonBounds.boxThree.start && AwesomeAfroLeft <= buttonBounds.boxThree.end && balloonData.isUnlocked) {
         await handleUpdateBalloon();
       }
 
       // Box Four Collision
-      else if (playerRight >= buttonBounds.boxFour.start && playerLeft <= buttonBounds.boxFour.end && balloonData.isUnlocked) {
+      else if (AwesomeAfroRight >= buttonBounds.boxFour.start && AwesomeAfroLeft <= buttonBounds.boxFour.end && balloonData.isUnlocked) {
         await handleDeleteBalloon();
       }
     }
@@ -142,15 +149,15 @@ const BalloonBoxes: React.FC<BalloonBoxesProps> = ({ left, playerPosition, jumpS
   // React to changes in the game state such as jumpStage
   useEffect(() => {
     if (jumpStage === jumpPeakStage) {
-      handleCheckCollision(playerLeft, playerRight);
+      handleCheckCollision(AwesomeAfroLeft, AwesomeAfroRight);
     }
-  }, [jumpStage, playerLeft, playerRight, handleCheckCollision]);
+  }, [jumpStage, AwesomeAfroLeft, AwesomeAfroRight, handleCheckCollision]);
 
   return (
     <div className="balloon-box-container" style={{ left: `${left}px` }}>
 
       {/* Guardian */}
-      <Guardian color={guardianColor} showBalloon={balloonData.showBalloon} favoriteBalloon={balloonData.balloonColor === guardianColor}/>
+      <Guardian color={guardianColor} showBalloon={balloonData.showBalloon} favoriteBalloon={balloonData.balloonColor === guardianColor} />
 
       {/* Buttons */}
       <Button type='first' isUnlocked={balloonData.isUnlocked} blockTwoColor={balloonData.blockTwoColor} />
