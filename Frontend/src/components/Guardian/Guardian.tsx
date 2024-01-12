@@ -5,13 +5,13 @@ import './Guardian.css';
 
 interface GuardianProps {
   color: string;
-  hasBalloon: boolean;
+  showBalloon: boolean;
   favoriteBalloon: boolean;
 }
 
-const Guardian: React.FC<GuardianProps> = ({ color, hasBalloon, favoriteBalloon }) => {
+const Guardian: React.FC<GuardianProps> = ({ color, showBalloon, favoriteBalloon }) => {
   let direction = 'left';
-  if (hasBalloon) {
+  if (showBalloon) {
     direction = favoriteBalloon ? 'up' : 'right';
   }
 
