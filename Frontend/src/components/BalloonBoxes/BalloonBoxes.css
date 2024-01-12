@@ -5,15 +5,9 @@
     align-items: center;
     justify-content: center;
     position: absolute;
-    height: 200px;
+    height: 230px;
     bottom: calc(15% + 80px); 
 
-  }
-  
-  .box {
-    width: 30px;
-    height: 30px;
-    cursor: pointer;
   }
   
   .balloon {
