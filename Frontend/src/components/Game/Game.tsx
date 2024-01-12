@@ -7,20 +7,21 @@ import HotAirBalloon from '../HotAirBalloon/HotAirBalloon';
 import './Game.css';
 import { getBalloons } from '../../services/balloonService';
 import Land from '../Land/Land';
+import Player from '../Player/Player';
 
 interface Guardians {
   // [key: string]: string;
   BalloonKing: {
     balloonStatus: string,
-    balloonId: number, 
+    balloonId: number,
   },
   BalloonGenie: {
     balloonStatus: string,
-    balloonId: number, 
+    balloonId: number,
   },
   BalloonSomething: {
     balloonStatus: string,
-    balloonId: number, 
+    balloonId: number,
   }
 }
 
@@ -40,7 +41,9 @@ const Game: React.FC = () => {
   // tracks whether the player is on the hot air balloon so we can make the original player disappear 
   const [isPlayerOnBalloon, setIsPlayerOnBalloon] = useState(false);
 
-  const [jumpStage, setJumpStage] = useState(0); // 0: on ground, 1: mid-jump, 2: top of jump
+  const [jumpStage, setJumpStage] = useState(0); // 0: standing, 1: mid-jump, 2: high-jump
+  const [walkStage, setWalkStage] = useState(0); // 0: standing, 1: left-foot, 2: right-foot
+  const [leftFootLast, setLeftFootLast] = useState(false); // keep track of last foot used while walking
 
   // maintain a state that tracks whether each Guardian has the correct balloon color
   const [openBarrier, setOpenBarrier] = useState(false);
@@ -63,34 +66,56 @@ const Game: React.FC = () => {
   const updatePlayerPosition = (newPosition: number) => {
     // Ensure that the player does not move beyond the left edge of the land
     newPosition = Math.max(newPosition, 0);
-  
+
     // Prevent the player from moving past the barrier if it's not open
     if (!openBarrier && newPosition >= barrierPosition - playerWidth) {
       newPosition = barrierPosition - playerWidth;
     }
-  
+
     // Ensure that the player does not move beyond the right edge of the land
     newPosition = Math.min(newPosition, landWidth - playerWidth);
-  
+
     setPlayerPosition(newPosition);
   };
 
   const handleKeyDown = useCallback((event: KeyboardEvent) => {
     const moveStep = 30; // Define the step the player moves on each key press
-  
+
     switch (event.key) {
       case 'ArrowLeft':
       case 'a':
-        updatePlayerPosition(playerPosition - moveStep);
+        // Walk logic: Start walk only if standing
+        if (walkStage === 0) {
+          if (leftFootLast) {
+            setWalkStage(2)
+            setLeftFootLast(false)
+          } else {
+            setWalkStage(1)
+            setLeftFootLast(true)
+          }
+          setTimeout(() => setWalkStage(0), 100); // Top of jump
+          updatePlayerPosition(playerPosition - moveStep);
+        }
         break;
       case 'ArrowRight':
       case 'd':
-        updatePlayerPosition(playerPosition + moveStep);
+        // Walk logic: Start walk only if standing
+        if (walkStage === 0) {
+          if (leftFootLast) {
+            setWalkStage(2)
+            setLeftFootLast(false)
+          } else {
+            setWalkStage(1)
+            setLeftFootLast(true)
+          }
+          setTimeout(() => setWalkStage(0), 100); // Top of jump
+          updatePlayerPosition(playerPosition + moveStep);
+        }
         break;
       case ' ':
       case 'w':
       case 'ArrowUp':
-        // Jump logic: Start jump only if on the ground
+        // Jump logic: Start jump only if standing
         if (jumpStage === 0) {
           setJumpStage(1); // Mid-jump
           setTimeout(() => setJumpStage(2), 200); // Top of jump
@@ -101,10 +126,10 @@ const Game: React.FC = () => {
       default:
         break;
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [playerPosition, jumpStage, openBarrier, barrierPosition, playerWidth, landWidth]);
-  
-  
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [playerPosition, jumpStage, openBarrier, barrierPosition, playerWidth, landWidth, walkStage]);
+
+
 
   useEffect(() => {
     const fetchBalloons = async () => {
@@ -156,14 +181,14 @@ const Game: React.FC = () => {
   useEffect(() => {
     // Attach the event listener when the component mounts
     window.addEventListener('keydown', handleKeyDown);
-  
+
     // Return a cleanup function that removes the event listener
     // This is important for preventing memory leaks
     return () => {
       window.removeEventListener('keydown', handleKeyDown);
     };
   }, [handleKeyDown]);
-  
+
 
 
 
@@ -208,24 +233,17 @@ const Game: React.FC = () => {
     setIsPlayerOnBalloon(true);
   };
 
-  // Function to determine player's bottom position based on jump stage
-  const getJumpPosition = () => {
-    switch (jumpStage) {
-      case 1: return 'calc(15% + 80px)'; // Mid-jump
-      case 2: return 'calc(15% + 140px)'; // Top of jump
-      default: return 'calc(15% + 20px)'; // On ground
-    }
-  };
+
 
   return (
     <div ref={gameContainerRef} className="game-container">
       <Land />
       {!isPlayerOnBalloon && (
-        <div className="player" style={{ left: `${playerPosition}px`, bottom: getJumpPosition() }}></div>
+        <Player jumpStage={jumpStage} playerPosition={playerPosition} walkStage={walkStage} />
       )}
       <BalloonBoxes left={2200} playerPosition={playerPosition} jumpStage={jumpStage} initialBalloonStatus={guardians.BalloonKing.balloonStatus} guardian={'BalloonKing'} updateGuardians={updateGuardians} initialBalloonId={guardians.BalloonKing.balloonId} />
-      <BalloonBoxes left={2700} playerPosition={playerPosition} jumpStage={jumpStage} initialBalloonStatus={guardians.BalloonGenie.balloonStatus} guardian={'BalloonGenie'} updateGuardians={updateGuardians} initialBalloonId={guardians.BalloonGenie.balloonId}/>
-      <BalloonBoxes left={3200} playerPosition={playerPosition} jumpStage={jumpStage} initialBalloonStatus={guardians.BalloonSomething.balloonStatus} guardian={'BalloonSomething'} updateGuardians={updateGuardians} initialBalloonId={guardians.BalloonSomething.balloonId}/>
+      <BalloonBoxes left={2700} playerPosition={playerPosition} jumpStage={jumpStage} initialBalloonStatus={guardians.BalloonGenie.balloonStatus} guardian={'BalloonGenie'} updateGuardians={updateGuardians} initialBalloonId={guardians.BalloonGenie.balloonId} />
+      <BalloonBoxes left={3200} playerPosition={playerPosition} jumpStage={jumpStage} initialBalloonStatus={guardians.BalloonSomething.balloonStatus} guardian={'BalloonSomething'} updateGuardians={updateGuardians} initialBalloonId={guardians.BalloonSomething.balloonId} />
       <Barrier isLifted={openBarrier} />
       <HotAirBalloon playerPosition={playerPosition} jumpStage={jumpStage} playerWidth={playerWidth} onPlayerJumpOn={handlePlayerJumpOnBalloon} />
     </div>
