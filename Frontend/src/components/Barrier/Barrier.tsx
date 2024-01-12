@@ -2,6 +2,7 @@
 
 import React from 'react';
 import './Barrier.css';
+import BalloonBarrier from '../../assets/background/BalloonBarrier.png'
 
 interface BarrierProps {
   isLifted: boolean;
@@ -9,7 +10,9 @@ interface BarrierProps {
 
 const Barrier: React.FC<BarrierProps> = ({ isLifted }) => {
   return (
-    <div className={`barrier ${isLifted ? 'lifted' : ''}`}></div>
+    <div className={`barrier ${isLifted ? 'lifted' : ''}`}>
+      <img src={BalloonBarrier} alt='barrier' />
+    </div>
   );
 };
 

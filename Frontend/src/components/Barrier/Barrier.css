@@ -2,12 +2,9 @@
 
 .barrier {
     position: absolute;
-    bottom: calc(15% + 20px);
-    left: 3700px;
-    width: 2px;
-    height: 20%;
-    background-color: black;
-    transition: bottom 0.5s ease;
+    bottom: calc(-15%);
+    left: 3800px;
+    transition: bottom 4.5s ease;
   }
   
   .barrier.lifted {
