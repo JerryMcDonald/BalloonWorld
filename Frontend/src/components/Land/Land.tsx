@@ -2,14 +2,14 @@
 
 import React from 'react';
 import './Land.css';
-import LandFullWithMountians from '../../assets/land/LandFullWithMountians.png'
+import LandFullWithMountains from '../../assets/land/LandFullWithMountains.png'
 
 const Land: React.FC = () => {
   return (
     <div>
         <div className="land">
 
-        <img src={LandFullWithMountians}></img>
+        <img src={LandFullWithMountains}></img>
         </div>
 
     </div>
