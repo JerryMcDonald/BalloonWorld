@@ -36,7 +36,7 @@ const BalloonBoxes: React.FC<BalloonBoxesProps> = ({ left, playerPosition, jumpS
     boxFour: { start: left + 270, end: left + 330 }
   }), [left]);
 
-  const handleAddBalloon = async () => {
+  const handleAddBalloon = async (): Promise<void> => {
     const response = await addBalloon({ color: balloonData.blockTwoColor, guardian: guardian });
     if (response && response.id) {
       const responseId: number = response.id; // Extracting ID for clarity.
@@ -53,7 +53,7 @@ const BalloonBoxes: React.FC<BalloonBoxesProps> = ({ left, playerPosition, jumpS
     }
   };
 
-  const handleUpdateBalloon = async () => {
+  const handleUpdateBalloon = async (): Promise<void> => {
     if (balloonData.balloonId) {
       const updatedBalloon = await updateBalloon({
         id: balloonData.balloonId,
@@ -73,7 +73,7 @@ const BalloonBoxes: React.FC<BalloonBoxesProps> = ({ left, playerPosition, jumpS
     }
   };
 
-  const handleDeleteBalloon = async () => {
+  const handleDeleteBalloon = async (): Promise<void> => {
     if (balloonData.balloonId) {
       const deleteSuccess = await deleteBalloon(balloonData.balloonId);
 
@@ -91,7 +91,7 @@ const BalloonBoxes: React.FC<BalloonBoxesProps> = ({ left, playerPosition, jumpS
     }
   };
 
-  const handleCheckCollision = useCallback(async (AwesomeAfroLeft: number, AwesomeAfroRight: number) => {
+  const handleCheckCollision = useCallback(async (AwesomeAfroLeft: number, AwesomeAfroRight: number): Promise<void> => {
     if (AwesomeAfroRight >= buttonBounds.boxOne.start && AwesomeAfroLeft <= buttonBounds.boxFour.end) {
 
       // Box One Collision

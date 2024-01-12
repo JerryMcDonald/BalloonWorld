@@ -30,9 +30,9 @@ export const addBalloon = async (balloonData: Balloon): Promise<Balloon | null> 
     }
 };
 
-export const updateBalloon = async (balloonData: Balloon): Promise<Balloon | null> => {
+export const updateBalloon = async (balloonData: Balloon): Promise<string | null> => {
     try {
-        const response = await axios.put<Balloon>(`${backendUrl}/${balloonData.id}`, balloonData);
+        await axios.put<Balloon>(`${backendUrl}/${balloonData.id}`, balloonData);
         return 'success'
     } catch (error) {
         console.error('Error updating balloon:', error);

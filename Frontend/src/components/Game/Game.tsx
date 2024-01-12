@@ -64,7 +64,7 @@ const Game: React.FC = () => {
     },
   });
 
-  const updatePlayerPosition = (newPosition: number) => {
+  const updatePlayerPosition = (newPosition: number): void => {
     // Ensure that the player does not move beyond the left edge of the land
     newPosition = Math.max(newPosition, 0);
 
@@ -79,7 +79,7 @@ const Game: React.FC = () => {
     setPlayerPosition(newPosition);
   };
 
-  const handleKeyDown = useCallback((event: KeyboardEvent) => {
+  const handleKeyDown = useCallback((event: KeyboardEvent): void => {
     const moveStep = 30; // Define the step the player moves on each key press
 
     switch (event.key) {
