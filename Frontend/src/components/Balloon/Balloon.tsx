@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
-// src/components/Guardian/Guardian.tsx
+// src/components/Balloon/Balloon.tsx
 
 
 // King
@@ -18,35 +18,28 @@ import BalloonAlienHappy from '../../assets/balloonAlien/BalloonAlienHappy.png';
 import BalloonAlienNormal from '../../assets/balloonAlien/BalloonAlienNormal.png';
 import BalloonAlienSad from '../../assets/balloonAlien/BalloonAlienSad.png';
 
-// Balloons
-import BlueBalloon from '../../assets/balloons/BlueBalloon.png';
-import GreenBalloon from '../../assets/balloons/GreenBalloon.png';
-import PurpleBalloon from '../../assets/balloons/PurpleBalloon.png';
-import RedBalloon from '../../assets/balloons/RedBalloon.png';
-import YellowBalloon from '../../assets/balloons/YellowBalloon.png';
-
 
 
 
 import React from 'react';
-import './Guardian.css';
+import './Balloon.css';
 
 
 
-interface GuardianProps {
+interface BalloonProps {
   guardian: string;
   showBalloon: boolean;
   currentBalloon: string;
 }
 
-const Guardian: React.FC<GuardianProps> = ({ guardian, showBalloon, currentBalloon }) => {
+const Balloon: React.FC<BalloonProps> = ({ guardian, showBalloon, currentBalloon }) => {
   const balloonKingFavoriteColor: string = 'green';
   const balloonGenieFavoriteColor: string = 'purple';
   const balloonAlienFavoriteColor: string = 'blue';
 
 
-  // function to determine which Guardian image to show
-  const getGuardianImage = (): string => {
+  // function to determine which Balloon image to show
+  const getImage = (): string => {
     if (guardian === 'BalloonKing') {
       if (showBalloon) {
         if (currentBalloon === balloonKingFavoriteColor) {
@@ -83,37 +76,14 @@ const Guardian: React.FC<GuardianProps> = ({ guardian, showBalloon, currentBallo
     return BalloonKingNormal
   }
 
-  const getBalloonImage = (): string => {
-    switch (currentBalloon) {
-      case 'blue':
-        return BlueBalloon
-      case 'green':
-        return GreenBalloon
-      case 'purple':
-        return PurpleBalloon
-      case 'yellow':
-        return YellowBalloon
-      default:
-        return RedBalloon
-    }
-  }
 
-
-  const guardianImageSrc: string = getGuardianImage();
-  const balloonImageSrc: string = getBalloonImage();
+  const imageSrc: string = getImage();
 
   return (
-    <div>
-      <div className={`guardian ${guardian}`}>
-        {guardianImageSrc && <img src={guardianImageSrc} alt={`${Guardian} image`} />}
-      </div>
-      {showBalloon && (
-        <div className={`balloon ${guardian}`}>
-          {balloonImageSrc && <img src={balloonImageSrc} alt={`${Guardian} image`} />}
-        </div>
-      )}
+    <div className={`guardian ${guardian}`}>
+      {imageSrc && <img src={imageSrc} alt={`${Balloon} image`} />}
     </div>
   );
 };
 
-export default Guardian;
+export default Balloon;

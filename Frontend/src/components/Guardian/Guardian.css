@@ -5,12 +5,30 @@
   bottom: calc(15% + 200px);
 }
 
-.BalloonKing {
+.guardian.BalloonKing {
   bottom: calc(15% + 150px);
 }
 
-.BalloonGenie {
+.guardian.BalloonGenie {
   bottom: calc(15% + 150px);
+}
+
+.balloon.BalloonKing {
+  position: absolute;
+  left: 120px;
+  bottom: calc(15% + 450px);
+}
+
+.balloon.BalloonGenie {
+  position: absolute;
+  left: 360px;
+  bottom: calc(15% + 480px);
+}
+
+.balloon.BalloonAlien {
+  position: absolute;
+  left: 380px;
+  bottom: calc(15% + 350px);
 }
 
 @keyframes rock {
@@ -23,6 +41,20 @@
   }
 }
 
+@keyframes sway {
+  0%, 100% {
+    transform: rotate(-5deg);
+  }
+  50% {
+    transform: rotate(5deg);
+  }
+}
+
 .guardian img {
   animation: rock 2s ease-in-out infinite;
+}
+
+.balloon img {
+  animation: sway 2s ease-in-out infinite;
+  transform-origin: bottom center; /* Sets the rotation point to the bottom center of the image */
 }

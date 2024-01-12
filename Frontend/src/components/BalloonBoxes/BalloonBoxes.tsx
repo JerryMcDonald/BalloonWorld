@@ -36,10 +36,6 @@ const BalloonBoxes: React.FC<BalloonBoxesProps> = ({ left, playerPosition, jumpS
     boxFour: { start: left + 270, end: left + 330 }
   }), [left]);
 
-  // Determine the guardian's color
-  const guardianColor = guardian === 'BalloonKing' ? 'green' :
-    guardian === 'BalloonGenie' ? 'purple' : 'blue';
-
   const handleAddBalloon = async () => {
     const response = await addBalloon({ color: balloonData.blockTwoColor, guardian: guardian });
     if (response && response.id) {
@@ -157,21 +153,13 @@ const BalloonBoxes: React.FC<BalloonBoxesProps> = ({ left, playerPosition, jumpS
     <div className="balloon-box-container" style={{ left: `${left}px` }}>
 
       {/* Guardian */}
-      <Guardian color={guardianColor} showBalloon={balloonData.showBalloon} favoriteBalloon={balloonData.balloonColor === guardianColor} />
+      <Guardian guardian={guardian} showBalloon={balloonData.showBalloon} currentBalloon={balloonData.balloonColor} />
 
       {/* Buttons */}
       <Button type='first' isUnlocked={balloonData.isUnlocked} blockTwoColor={balloonData.blockTwoColor} />
       <Button type='second' isUnlocked={balloonData.isUnlocked} blockTwoColor={balloonData.blockTwoColor} />
       <Button type='third' isUnlocked={balloonData.isUnlocked} blockTwoColor={balloonData.blockTwoColor} />
       <Button type='fourth' isUnlocked={balloonData.isUnlocked} blockTwoColor={balloonData.blockTwoColor} />
-
-      {/* Balloon */}
-      {balloonData.showBalloon && (
-        <div
-          className="balloon"
-          style={{ backgroundColor: balloonData.balloonColor, top: '-100px' }}
-        ></div>
-      )}
     </div>
   );
 };

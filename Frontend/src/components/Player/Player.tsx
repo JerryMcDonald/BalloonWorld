@@ -44,7 +44,6 @@ const Player: React.FC<PlayerProps> = ({ jumpStage, walkStage, playerPosition })
         return PlayerStanding;
     };
 
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const imageSrc: string = getImage();
 
     return (

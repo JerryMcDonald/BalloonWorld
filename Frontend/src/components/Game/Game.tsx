@@ -19,7 +19,7 @@ interface Guardians {
     balloonStatus: string,
     balloonId: number,
   },
-  BalloonSomething: {
+  BalloonAlien: {
     balloonStatus: string,
     balloonId: number,
   }
@@ -36,7 +36,8 @@ const Game: React.FC = () => {
   const playerWidth = 30; // the player is 30px wide
 
   // Set initial player position to the middle of the viewport
-  const [playerPosition, setPlayerPosition] = useState(window.innerWidth / 2);
+  // const [playerPosition, setPlayerPosition] = useState(window.innerWidth / 2);
+  const [playerPosition, setPlayerPosition] = useState(2000); // for testing balloon
 
   // tracks whether the player is on the hot air balloon so we can make the original player disappear 
   const [isPlayerOnBalloon, setIsPlayerOnBalloon] = useState(false);
@@ -57,7 +58,7 @@ const Game: React.FC = () => {
       balloonStatus: 'noBalloon',
       balloonId: 0,
     },
-    BalloonSomething: {
+    BalloonAlien: {
       balloonStatus: 'noBalloon',
       balloonId: 0,
     },
@@ -149,7 +150,7 @@ const Game: React.FC = () => {
             balloonStatus: 'noBalloon',
             balloonId: 0,
           },
-          BalloonSomething: {
+          BalloonAlien: {
             balloonStatus: 'noBalloon',
             balloonId: 0,
           },
@@ -210,7 +211,7 @@ const Game: React.FC = () => {
   // UseEffect to check if barrier should be open
   useEffect(() => {
     // This checks if the game container (div with ref={gameContainerRef}) is currently available in the DOM. It's a safety check to ensure the container exists before trying to modify it.
-    if (guardians.BalloonKing.balloonStatus === 'green' && guardians.BalloonGenie.balloonStatus === 'purple' && guardians.BalloonSomething.balloonStatus === 'blue') {
+    if (guardians.BalloonKing.balloonStatus === 'green' && guardians.BalloonGenie.balloonStatus === 'purple' && guardians.BalloonAlien.balloonStatus === 'blue') {
       setOpenBarrier(true)
     } else {
       setOpenBarrier(false)
@@ -243,7 +244,7 @@ const Game: React.FC = () => {
       )}
       <BalloonBoxes left={2200} playerPosition={playerPosition} jumpStage={jumpStage} initialBalloonStatus={guardians.BalloonKing.balloonStatus} guardian={'BalloonKing'} updateGuardians={updateGuardians} initialBalloonId={guardians.BalloonKing.balloonId} />
       <BalloonBoxes left={2700} playerPosition={playerPosition} jumpStage={jumpStage} initialBalloonStatus={guardians.BalloonGenie.balloonStatus} guardian={'BalloonGenie'} updateGuardians={updateGuardians} initialBalloonId={guardians.BalloonGenie.balloonId} />
-      <BalloonBoxes left={3200} playerPosition={playerPosition} jumpStage={jumpStage} initialBalloonStatus={guardians.BalloonSomething.balloonStatus} guardian={'BalloonSomething'} updateGuardians={updateGuardians} initialBalloonId={guardians.BalloonSomething.balloonId} />
+      <BalloonBoxes left={3200} playerPosition={playerPosition} jumpStage={jumpStage} initialBalloonStatus={guardians.BalloonAlien.balloonStatus} guardian={'BalloonAlien'} updateGuardians={updateGuardians} initialBalloonId={guardians.BalloonAlien.balloonId} />
       <Barrier isLifted={openBarrier} />
       <HotAirBalloon playerPosition={playerPosition} jumpStage={jumpStage} playerWidth={playerWidth} onPlayerJumpOn={handlePlayerJumpOnBalloon} />
     </div>

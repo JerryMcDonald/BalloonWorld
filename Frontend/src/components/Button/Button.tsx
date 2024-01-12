@@ -1,7 +1,6 @@
 // src/components/Button/Button.tsx
 
 import React from 'react';
-import './Button.css';
 
 // swaps
 import BlueSwap from '../../assets/buttons/BlueSwap.png';
