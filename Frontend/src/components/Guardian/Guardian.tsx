@@ -109,7 +109,7 @@ const Guardian: React.FC<GuardianProps> = ({ guardian, showBalloon, currentBallo
       </div>
       {showBalloon && (
         <div className={`balloon ${guardian}`}>
-          {balloonImageSrc && <img src={balloonImageSrc} alt={`${Guardian} image`} />}
+          {balloonImageSrc && <img src={balloonImageSrc} alt={`${currentBalloon} balloon`} />}
         </div>
       )}
     </div>
