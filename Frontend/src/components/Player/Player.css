@@ -1,0 +1,10 @@
+
+/* src/components/Player/Player.css */
+
+.player {
+    position: absolute;
+    width: 120px; 
+    height: 200px;
+    display: flex;
+    justify-content: center;
+  }

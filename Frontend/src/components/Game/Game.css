@@ -1,16 +1,8 @@
 /* src/components/Game/Game.css */
 
 .game-container {
-    position: relative;
-    height: 100vh; /* Full viewport height */
-    width: 100vw; /* Full viewport width */
-    overflow: hidden; /* This prevents internal scrolling */
-  }
-
-  .player {
-    position: absolute;
-    bottom: calc(15% + 20px); /* Actually not necessary because ground position is being returned by getJumpPosition */
-    width: 30px; 
-    height: 30px;
-    background-color: blue;
-  }
+  position: relative;
+  height: 100vh; /* Full viewport height */
+  width: 100vw; /* Full viewport width */
+  overflow: hidden; /* This prevents internal scrolling */
+}
