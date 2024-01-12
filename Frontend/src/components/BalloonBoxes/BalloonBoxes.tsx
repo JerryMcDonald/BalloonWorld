@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useCallback, useMemo } from 'react';
 import './BalloonBoxes.css';
 import Guardian from '../Guardian/Guardian';
+import Button from '../Button/Button';
 import { addBalloon, deleteBalloon, updateBalloon } from '../../services/balloonService';
 
 // Define a type for the component props
@@ -27,12 +28,12 @@ const BalloonBoxes: React.FC<BalloonBoxesProps> = ({ left, playerPosition, jumpS
   const playerRight = playerPosition + 30; // the player is 30px wide
   const jumpPeakStage = 2; // 2 is the peak of the jump
 
-  // Calculate the left and right bounds of this component's boxes
-  const boxBounds = useMemo(() => ({
-    boxOne: { start: left, end: left + 30 },
-    boxTwo: { start: left + 90, end: left + 120 },
-    boxThree: { start: left + 180, end: left + 210 },
-    boxFour: { start: left + 270, end: left + 300 }
+  // Calculate the left and right bounds of this component's buttons
+  const buttonBounds = useMemo(() => ({
+    boxOne: { start: left, end: left + 60 },
+    boxTwo: { start: left + 90, end: left + 150 },
+    boxThree: { start: left + 180, end: left + 240 },
+    boxFour: { start: left + 270, end: left + 330 }
   }), [left]);
 
   // Determine the guardian's color
@@ -95,16 +96,16 @@ const BalloonBoxes: React.FC<BalloonBoxesProps> = ({ left, playerPosition, jumpS
   };
 
   const handleCheckCollision = useCallback(async (playerLeft: number, playerRight: number) => {
-    if (playerRight >= boxBounds.boxOne.start && playerLeft <= boxBounds.boxFour.end) {
+    if (playerRight >= buttonBounds.boxOne.start && playerLeft <= buttonBounds.boxFour.end) {
 
       // Box One Collision
-      if (playerRight >= boxBounds.boxOne.start && playerLeft <= boxBounds.boxOne.end && !balloonData.isUnlocked) {
+      if (playerRight >= buttonBounds.boxOne.start && playerLeft <= buttonBounds.boxOne.end && !balloonData.isUnlocked) {
         await handleAddBalloon();
       }
 
       // Box Two Collision
-      else if (playerRight >= boxBounds.boxTwo.start && playerLeft <= boxBounds.boxTwo.end && balloonData.isUnlocked) {
-        const colors = ['red', 'green', 'orange', 'blue', 'purple'];
+      else if (playerRight >= buttonBounds.boxTwo.start && playerLeft <= buttonBounds.boxTwo.end && balloonData.isUnlocked) {
+        const colors = ['blue', 'green', 'purple', 'red', 'yellow'];
         const newBlockTwoColor = colors[(colors.indexOf(balloonData.blockTwoColor) + 1) % colors.length];
         setBalloonData(prevData => ({
           ...prevData,
@@ -113,17 +114,17 @@ const BalloonBoxes: React.FC<BalloonBoxesProps> = ({ left, playerPosition, jumpS
       }
 
       // Box Three Collision
-      else if (playerRight >= boxBounds.boxThree.start && playerLeft <= boxBounds.boxThree.end && balloonData.isUnlocked) {
+      else if (playerRight >= buttonBounds.boxThree.start && playerLeft <= buttonBounds.boxThree.end && balloonData.isUnlocked) {
         await handleUpdateBalloon();
       }
 
       // Box Four Collision
-      else if (playerRight >= boxBounds.boxFour.start && playerLeft <= boxBounds.boxFour.end && balloonData.isUnlocked) {
+      else if (playerRight >= buttonBounds.boxFour.start && playerLeft <= buttonBounds.boxFour.end && balloonData.isUnlocked) {
         await handleDeleteBalloon();
       }
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [boxBounds, guardian, updateGuardians]);
+  }, [buttonBounds, guardian, updateGuardians]);
 
   useEffect(() => {
     if (initialBalloonStatus !== 'noBalloon') {
@@ -140,44 +141,22 @@ const BalloonBoxes: React.FC<BalloonBoxesProps> = ({ left, playerPosition, jumpS
 
   // React to changes in the game state such as jumpStage
   useEffect(() => {
-    if (jumpStage === jumpPeakStage) { 
+    if (jumpStage === jumpPeakStage) {
       handleCheckCollision(playerLeft, playerRight);
     }
   }, [jumpStage, playerLeft, playerRight, handleCheckCollision]);
 
   return (
     <div className="balloon-box-container" style={{ left: `${left}px` }}>
+
       {/* Guardian */}
-      <Guardian
-        // type={guardian}
-        color={guardianColor}
-        hasBalloon={balloonData.showBalloon}
-        favoriteBalloon={balloonData.balloonColor === guardianColor}
-      />
+      <Guardian color={guardianColor} showBalloon={balloonData.showBalloon} favoriteBalloon={balloonData.balloonColor === guardianColor}/>
 
-      {/* First Box */}
-      <div
-        className="box"
-        style={{ backgroundColor: balloonData.isUnlocked ? 'successGreen' : 'black' }}
-      ></div>
-
-      {/* Second Box */}
-      <div
-        className="box"
-        style={{ backgroundColor: balloonData.isUnlocked ? balloonData.blockTwoColor : 'grey', marginLeft: '60px' }}
-      ></div>
-
-      {/* Third Box */}
-      <div
-        className="box"
-        style={{ backgroundColor: balloonData.isUnlocked ? 'blue' : 'grey', marginLeft: '60px' }}
-      ></div>
-
-      {/* Fourth Box */}
-      <div
-        className="box"
-        style={{ backgroundColor: balloonData.isUnlocked ? 'red' : 'grey', marginLeft: '60px' }}
-      ></div>
+      {/* Buttons */}
+      <Button type='first' isUnlocked={balloonData.isUnlocked} blockTwoColor={balloonData.blockTwoColor} />
+      <Button type='second' isUnlocked={balloonData.isUnlocked} blockTwoColor={balloonData.blockTwoColor} />
+      <Button type='third' isUnlocked={balloonData.isUnlocked} blockTwoColor={balloonData.blockTwoColor} />
+      <Button type='fourth' isUnlocked={balloonData.isUnlocked} blockTwoColor={balloonData.blockTwoColor} />
 
       {/* Balloon */}
       {balloonData.showBalloon && (
