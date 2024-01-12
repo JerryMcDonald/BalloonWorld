@@ -1,25 +1,28 @@
 /* src/components/Guardian/Guardian.css */
 
 .guardian {
-    position: absolute;
-    width: 0;
-    height: 0;
-    left: 10px;
-    border-style: solid;
-    border-width: 50px 0 50px 86.6px; /* Creates a triangle */
-    margin: 20px;
-    bottom: calc(15% + 200px);
+  position: absolute;
+  bottom: calc(15% + 200px);
+}
+
+.BalloonKing {
+  bottom: calc(15% + 150px);
+}
+
+.BalloonGenie {
+  bottom: calc(15% + 150px);
+}
+
+@keyframes rock {
+  0%,
+  100% {
+    transform: rotate(-5deg);
   }
-  
-  .guardian.left {
-    transform: rotate(90deg);
+  50% {
+    transform: rotate(5deg);
   }
-  
-  .guardian.right {
-    transform: rotate(180deg);
-  }
-  
-  .guardian.up {
-    transform: rotate(-90deg);
-    
-  }
+}
+
+.guardian img {
+  animation: rock 2s ease-in-out infinite;
+}
