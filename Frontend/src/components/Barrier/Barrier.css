@@ -3,7 +3,7 @@
 .barrier {
     position: absolute;
     bottom: calc(15% + 20px);
-    left: 4500px;
+    left: 3700px;
     width: 2px;
     height: 20%;
     background-color: black;
