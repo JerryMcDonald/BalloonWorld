@@ -2,11 +2,17 @@
 
 import React from 'react';
 import './Land.css';
-
+import LandFullWithMountians from '../../assets/land/LandFullWithMountians.png'
 
 const Land: React.FC = () => {
   return (
-    <div className="land"></div>
+    <div>
+        <div className="land">
+
+        <img src={LandFullWithMountians}></img>
+        </div>
+
+    </div>
   );
 };
 
