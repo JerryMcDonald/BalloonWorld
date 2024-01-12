@@ -9,6 +9,8 @@ This repository consists of two main parts:
 2. **Frontend**: React and TypeScript, compiled with Vite.
 1. **Backend**: RESTful API endpoints to manage game data, developed using ASP.NET Core with a target framework of .NET 8.0.
 
+![image](https://github.com/JerryMcDonald/BalloonWorld/assets/35512632/a3dd57bb-830b-441b-b234-e67924209a43)
+
 ## Getting Started
 
 The instructions for setting up the Backend and Frontend are located in their respective directories.
