@@ -8,6 +8,7 @@ import './Game.css';
 import { getBalloons } from '../../services/balloonService';
 import Land from '../Land/Land';
 import Player from '../Player/Player';
+import Background from '../Background/Background';
 
 interface Guardians {
   // [key: string]: string;
@@ -37,7 +38,7 @@ const Game: React.FC = () => {
 
   // Set initial player position to the middle of the viewport
   // const [playerPosition, setPlayerPosition] = useState(window.innerWidth / 2);
-  const [playerPosition, setPlayerPosition] = useState(2000); // for testing balloon
+  const [playerPosition, setPlayerPosition] = useState(1000); // for testing balloon
 
   // tracks whether the player is on the hot air balloon so we can make the original player disappear 
   const [isPlayerOnBalloon, setIsPlayerOnBalloon] = useState(false);
@@ -242,6 +243,7 @@ const Game: React.FC = () => {
       {!isPlayerOnBalloon && (
         <Player jumpStage={jumpStage} playerPosition={playerPosition} walkStage={walkStage} />
       )}
+      <Background />
       <BalloonBoxes left={2200} playerPosition={playerPosition} jumpStage={jumpStage} initialBalloonStatus={guardians.BalloonKing.balloonStatus} guardian={'BalloonKing'} updateGuardians={updateGuardians} initialBalloonId={guardians.BalloonKing.balloonId} />
       <BalloonBoxes left={2700} playerPosition={playerPosition} jumpStage={jumpStage} initialBalloonStatus={guardians.BalloonGenie.balloonStatus} guardian={'BalloonGenie'} updateGuardians={updateGuardians} initialBalloonId={guardians.BalloonGenie.balloonId} />
       <BalloonBoxes left={3200} playerPosition={playerPosition} jumpStage={jumpStage} initialBalloonStatus={guardians.BalloonAlien.balloonStatus} guardian={'BalloonAlien'} updateGuardians={updateGuardians} initialBalloonId={guardians.BalloonAlien.balloonId} />

@@ -1,0 +1,27 @@
+.sun {
+    position: absolute;
+    bottom: calc(50% + 200px);
+    left: 1600px;
+    /* transition: bottom 4.5s ease; */
+  }
+
+
+  .movingBackground {
+    position: absolute;
+    bottom: calc(60%);
+    width: 6000px;
+    height: 400px;
+    background-image: url('../../assets/background/MovingBackground.png');
+    background-repeat: repeat-x; /* Repeat image horizontally */
+    animation: moveBackground 100s linear infinite; 
+  }
+
+  @keyframes moveBackground {
+    from { background-position: 0 0; }
+    to { background-position: -6000px 0; /* width of your image */}
+  }
+
+
+  
+ 
+  
